@@ -13,8 +13,8 @@
 
 | Project Name | Current Version | Stage | Last Updated | Link |
 | :--- | :---: | :---: | :---: | :---: |
-| **🪵 WeLog (장 건강 예보)** | `v1.0.0` | 🔴 Local | 2026-01-05 | [Go to Docs](./welog/README.md) |
-| **😴 Somnus (수면 사이클)** | `v0.1.0` | 🔴 Local | 2026-01-05 | [Go to Docs](./somnus/README.md) |
+| **🪵 WeLog (장 건강 예보)** | `v0.0.1` | 🔴 Local | 2026-01-05 | [Go to Docs](./welog/README.md) |
+| **😴 Somnus (수면 사이클)** | `v0.0.1` | 🔴 Local | 2026-01-05 | [Go to Docs](./somnus/README.md) |
 
 > **Stage 설명:**
 > - 🟢 **Live**: 운영 서버 배포 완료 (안정적)
@@ -27,7 +27,7 @@
 
 ### 1. [WeLog (장 건강 예보 서비스)](./welog/README.md)
 - **주요 기능**: 식단/배변 기록, 설사 확률 예측 알고리즘, 건강 리포트
-- **비고**: 매운 음식 가중치 계산 로직이 `v1.0.0`에 반영되었습니다.
+- **비고**: 매운 음식 가중치 계산 로직이 `v0.0.1`에 반영되었습니다.
 
 ### 2. [Somnus (수면 사이클 비서)](./somnus/README.md)
 - **주요 기능**: REM 수면 주기 계산, 기상/취침 시간 추천, 타이머 설정
@@ -44,4 +44,4 @@
 
 ### 📞 Contact
 API 관련 문의나 이슈는 **Issues** 탭을 이용해주시거나 아래로 연락주세요.
-- **Backend Dev**: `your_email@example.com`
+- **Backend Dev**: `bona.stella.91@google.com`
