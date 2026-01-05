@@ -13,10 +13,8 @@
 
 | Project Name | Current Version | Stage | Last Updated | Link |
 | :--- | :---: | :---: | :---: | :---: |
-| **🛍️ 쇼핑몰 (Mall)** | `v1.2.0` | 🟢 Live | 2024-01-05 | [Go to Docs](./Shopping-Mall/README.md) |
-| **🔧 관리자 (Admin)** | `v0.8.5` | 🟡 Dev | 2024-01-03 | [Go to Docs](./Admin-Dashboard/README.md) |
-| **💬 채팅 서버 (Chat)** | `v0.1.0` | 🔴 Local | 2023-12-28 | [Go to Docs](./Chat-Server/README.md) |
-| **🎫 예매 시스템** | `v1.0.1` | 🟢 Live | 2024-01-02 | [Go to Docs](./Ticket-System/README.md) |
+| **🪵 WeLog (장 건강 예보)** | `v1.0.0` | 🔴 Local | 2026-01-05 | [Go to Docs](./welog/README.md) |
+| **😴 Somnus (수면 사이클)** | `v0.1.0` | 🔴 Local | 2026-01-05 | [Go to Docs](./somnus/README.md) |
 
 > **Stage 설명:**
 > - 🟢 **Live**: 운영 서버 배포 완료 (안정적)
@@ -27,24 +25,20 @@
 
 ## 📂 Quick Links (프로젝트별 바로가기)
 
-### 1. [쇼핑몰 프로젝트 (Shopping-Mall)](./Shopping-Mall/README.md)
-- **주요 기능**: 상품 조회, 장바구니, 결제 모듈
-- **비고**: 결제 검증 로직이 v1.2.0에서 변경되었습니다.
+### 1. [WeLog (장 건강 예보 서비스)](./welog/README.md)
+- **주요 기능**: 식단/배변 기록, 설사 확률 예측 알고리즘, 건강 리포트
+- **비고**: 매운 음식 가중치 계산 로직이 `v1.0.0`에 반영되었습니다.
 
-### 2. [관리자 대시보드 (Admin-Dashboard)](./Admin-Dashboard/README.md)
-- **주요 기능**: 회원 관리, 매출 통계, 배너 관리
-- **비고**: 현재 `auth` 관련 API 리팩토링 중입니다.
-
-### 3. [채팅 서버 (Chat-Server)](./Chat-Server/README.md)
-- **주요 기능**: 실시간 소켓 통신, 채팅방 CRUD
-- **비고**: 소켓 포트가 `8080`에서 `3000`으로 변경될 예정입니다.
+### 2. [Somnus (수면 사이클 비서)](./somnus/README.md)
+- **주요 기능**: REM 수면 주기 계산, 기상/취침 시간 추천, 타이머 설정
+- **비고**: 현재 기본 계산 로직 구현 후 API 명세 작성 중입니다.
 
 ---
 
 ## 📢 공통 공지사항 (Notice)
 
-- **[2024-01-01]** 모든 개발 서버의 DB 패스워드가 변경되었습니다. 각 프로젝트 문서 내 `Credential` 항목을 확인해주세요.
-- **[2023-12-25]** 매주 수요일 오전 04:00 ~ 05:00 정기 점검이 있습니다.
+- **[2026-01-05]** 신규 프로젝트 `Somnus` 문서가 추가되었습니다.
+- **[2026-01-01]** 모든 개발 서버의 DB 패스워드가 변경되었습니다. 각 프로젝트 문서 내 `Credential` 항목을 확인해주세요.
 
 ---
 
