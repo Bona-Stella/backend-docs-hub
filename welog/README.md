@@ -1,53 +1,71 @@
-# 📚 Backend Docs Hub
+# 🪵 WeLog Backend Guide
 
-이 저장소는 프론트엔드 팀과의 협업을 위해 **모든 프로젝트의 백엔드 API 명세, 변경 내역, 접속 정보**를 통합 관리하는 곳입니다.
+**WeLog 프로젝트**의 프론트엔드 연동을 위한 백엔드 가이드 문서입니다.
+서버 접속 정보, 테스트 계정, 그리고 **API 변경 내역(Changelog)**을 이곳에서 관리합니다.
 
-소스 코드는 포함되어 있지 않으며, 아래 표에서 프로젝트별 **최신 릴리즈 버전**과 **문서**를 확인하실 수 있습니다.
-
----
-
-## 🚦 Project Status & Release
-
-각 프로젝트의 배포 상태와 API 버전을 한눈에 확인하세요.
-`Docs` 링크를 클릭하면 상세 가이드(계정 정보, 변경 로그)로 이동합니다.
-
-| Project Name | Current Version | Stage | Last Updated | Link |
-| :--- | :---: | :---: | :---: | :---: |
-| **🛍️ 쇼핑몰 (Mall)** | `v1.2.0` | 🟢 Live | 2024-01-05 | [Go to Docs](./Shopping-Mall/README.md) |
-| **🔧 관리자 (Admin)** | `v0.8.5` | 🟡 Dev | 2024-01-03 | [Go to Docs](./Admin-Dashboard/README.md) |
-| **💬 채팅 서버 (Chat)** | `v0.1.0` | 🔴 Local | 2023-12-28 | [Go to Docs](./Chat-Server/README.md) |
-| **🎫 예매 시스템** | `v1.0.1` | 🟢 Live | 2024-01-02 | [Go to Docs](./Ticket-System/README.md) |
-
-> **Stage 설명:**
-> - 🟢 **Live**: 운영 서버 배포 완료 (안정적)
-> - 🟡 **Dev**: 개발 서버 배포 완료 (테스트 중)
-> - 🔴 **Local**: 로컬 개발 중 (서버 불안정 할 수 있음)
+> **Current Version**: `v1.0.0`
+> **Last Updated**: 2026-01-05
 
 ---
 
-## 📂 Quick Links (프로젝트별 바로가기)
+## 1. 🌐 Server Environments (서버 접속 정보)
 
-### 1. [쇼핑몰 프로젝트 (Shopping-Mall)](./Shopping-Mall/README.md)
-- **주요 기능**: 상품 조회, 장바구니, 결제 모듈
-- **비고**: 결제 검증 로직이 v1.2.0에서 변경되었습니다.
+API 요청을 보낼 기본 Base URL입니다.
 
-### 2. [관리자 대시보드 (Admin-Dashboard)](./Admin-Dashboard/README.md)
-- **주요 기능**: 회원 관리, 매출 통계, 배너 관리
-- **비고**: 현재 `auth` 관련 API 리팩토링 중입니다.
-
-### 3. [채팅 서버 (Chat-Server)](./Chat-Server/README.md)
-- **주요 기능**: 실시간 소켓 통신, 채팅방 CRUD
-- **비고**: 소켓 포트가 `8080`에서 `3000`으로 변경될 예정입니다.
+| 환경 (Env) | 상태 (Status) | Base URL | 비고 |
+| :--- | :---: | :--- | :--- |
+| **Local** | 💻 My PC | `http://localhost:8080` | 로컬 개발용 |
+| **Dev** | 🟡 Running | `http://dev-api.welog.com` | 개발 서버 (AWS EC2) |
+| **Prod** | 🔴 Stop | `https://api.welog.com` | 운영 서버 (준비 중) |
 
 ---
 
-## 📢 공통 공지사항 (Notice)
+## 2. 🔑 Test Accounts (테스트 계정)
 
-- **[2024-01-01]** 모든 개발 서버의 DB 패스워드가 변경되었습니다. 각 프로젝트 문서 내 `Credential` 항목을 확인해주세요.
-- **[2023-12-25]** 매주 수요일 오전 04:00 ~ 05:00 정기 점검이 있습니다.
+개발 및 테스트 시 아래 계정을 사용해주세요. **비밀번호는 주기적으로 변경될 수 있습니다.**
+
+| Role | Username (ID) | Password | 설명 |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `admin@welog.com` | `admin1234!` | 관리자 권한 (모든 글 삭제 가능) |
+| **User A** | `test01` | `test1234` | 일반 사용자 (게시글 작성용) |
+| **User B** | `test02` | `test1234` | 일반 사용자 (댓글 작성용) |
+| **Guest** | - | - | 비로그인 상태 테스트 |
+
+> ⚠️ **주의**: `test01` 계정의 데이터는 매일 자정에 초기화됩니다.
 
 ---
 
-### 📞 Contact
-API 관련 문의나 이슈는 **Issues** 탭을 이용해주시거나 아래로 연락주세요.
-- **Backend Dev**: `your_email@example.com`
+## 3. 🚀 API Change Log (변경 내역)
+
+프론트엔드 연동에 영향을 주는 **API 변경 사항(CRUD)**을 최신순으로 기록합니다.
+
+#### [v1.0.0] - 2026-01-05
+- **✨ New Features**
+    - `POST /api/logs`: 로그 작성 기능 구현 완료
+    - `GET /api/logs`: 로그 목록 조회 (페이지네이션 적용, `page`, `size` 파라미터 필요)
+- **🛠 Updates**
+    - `POST /auth/login`: 응답 값에 `refreshToken` 필드 추가됨
+- **🔥 Removals**
+    - `GET /api/temp`: 임시 테스트용 API 삭제
+
+#### [v0.9.0] - 2026-01-01
+- **✨ New Features**
+    - 회원가입 (`/auth/signup`), 로그인 (`/auth/login`) 기본 로직 구현
+- **🐛 Bug Fixes**
+    - 이메일 중복 체크 시 500 에러 발생하던 문제 수정
+
+---
+
+## 4. 📚 API Specification (상세 명세)
+
+요청 파라미터(Request Body) 및 응답 값(Response)에 대한 상세 스펙은 아래 링크를 참고하세요.
+
+- **Swagger UI**: [http://dev-api.welog.com/swagger-ui.html](http://localhost:8080) (접속 불가 시 요청 바람)
+- **Postman**: (초대 링크가 있다면 여기에 첨부)
+
+---
+
+## 5. 🗣 Q&A & Issues
+
+개발 중 발생하는 API 오류나 문의 사항은 **[Issues 탭](../../issues)**에 남겨주세요.
+급한 건은 슬랙/카톡으로 연락 바랍니다.
