@@ -141,6 +141,16 @@ Final_Risk = 1 - ( (1 - Risk_Factor_1) * (1 - Risk_Factor_2) * ... * (1 - Risk_F
 
 **계산:**
 $Risk = 1 - (0.5 \times 0.8 \times 0.9) = 0.64$, 결과값은 **64%**
+```text
+1. 생존 확률 곱셈 (모두 통과할 확률)
+   Survive_Prob = 0.5 * 0.8 * 0.9 = 0.36 (36%)
+
+2. 최종 발병 확률 (1에서 뺌)
+   Final_Risk = 1.0 - 0.36 = 0.64
+
+3. 결과
+   Result = 64%
+```
 
 ---
 ## 5. 📡 API Specification Strategy
