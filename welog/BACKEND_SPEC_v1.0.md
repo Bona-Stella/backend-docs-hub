@@ -140,9 +140,13 @@ Final_Risk = 1 - ( (1 - Risk_Factor_1) * (1 - Risk_Factor_2) * ... * (1 - Risk_F
 *   요소 3 (**스타벅스**): 과거 기록상 위험도 **0.1 (10%)** -> 생존확률 0.9
 
 **계산:**
-$$ Risk = 1 - (0.5 \times 0.8 \times 0.9) $$
-$$ Risk = 1 - 0.36 $$
-$$ \textbf{Result} = 0.64 \rightarrow \textbf{64\%} $$
+$$
+\begin{aligned}
+Risk &= 1 - (0.5 \times 0.8 \times 0.9) \\
+Risk &= 1 - 0.36 \\
+\textbf{Result} &= 0.64 \rightarrow \mathbf{64\%}
+\end{aligned}
+$$
 
 ---
 ## 5. 📡 API Specification Strategy
