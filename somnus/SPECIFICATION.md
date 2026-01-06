@@ -2,6 +2,12 @@
 
 개인별 수면 주기와 기상/취침 시간을 계산해주는 iOS 스타일의 웹 앱(PWA) 개발 명세서입니다.
 
+## 🎨 UI/UX Design (Figma)
+UI 상세 디자인과 에셋(아이콘, 컬러 등)은 아래 피그마 링크를 참고해주세요.
+- **Figma URL**: [https://www.figma.com/design/7WSWFOlEL5dMgBewYOflgr/Somnus-UI-UX?m=auto&t=Sk5vhxeL6ALMkgax-1]
+
+---
+
 ## 1. 프로젝트 개요 (Overview)
 
 - **목표**: 사용자가 설정한 시간과 **수면 주기(Cycle)**, **잠드는 시간(Latency)**을 기반으로 최적의 수면 시간을 계산.
