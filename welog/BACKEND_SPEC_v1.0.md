@@ -111,9 +111,40 @@ CREATE TABLE symptom_logs (
 CREATE INDEX idx_food_logs_user_date ON food_logs(user_id, eat_date);
 CREATE INDEX idx_symptom_logs_user_date ON symptom_logs(user_id, symptom_date);
 ```
-## 4. 📡 API Specification Strategy
+
+## 4. 🧠 Core Algorithm (Risk Scoring Logic)
+WeLog의 핵심 기능인 '발병 확률'을 계산하는 로직입니다.
+단순 합산 방식이 아닌, **여집합의 확률(Probability of Union)**을 사용하여 수학적 정합성을 보장합니다.
+
+### 4.1 Basic Concept
+> **Logic:** "현재 소화 중인 모든 음식/태그/식당을 독립적인 위험 인자로 간주하고, 이들로부터 **모두 살아남을(발병하지 않을) 확률을 구해 1에서 뺀 값**을 발병 확률로 정의한다."
+
+이 방식을 통해 위험 요소가 많아질수록 확률은 100%에 수렴하며, 단순 합산 시 100%를 초과하는 오류를 방지합니다.
+
+### 4.2 Calculation Formula
+$$ P(TotalRisk) = 1 - \prod_{i=1}^{n} (1 - P(Factor_i)) $$
+
+1.  **Scope:** `NOW()` 기준 `User.digestion_time`(Default 18h) 이내에 섭취한 모든 `FoodLog`, `Tag`, `Restaurant` 수집.
+2.  **Individual Risk ($P(Factor)$):** 각 요소의 과거 데이터 조회.
+    *   $$ P(Factor) = \frac{\text{Count}(Factor \cap Symptom)}{\text{Count}(Total Factor)} $$
+    *   *데이터가 없거나 적을 경우(Cold Start), 가중치를 0으로 처리하거나 기본값 적용.*
+3.  **Aggregation:** 위 공식을 적용하여 최종 확률(%) 도출.
+
+### 4.3 Simulation Example
+**상황:** 사용자가 최근 18시간 내에 **[스타벅스]**에서 **[매운 라떼]**를 섭취함.
+*   요소 1 (**매운맛**): 과거 기록상 위험도 **0.5 (50%)** -> 생존확률 0.5
+*   요소 2 (**라떼**): 과거 기록상 위험도 **0.2 (20%)** -> 생존확률 0.8
+*   요소 3 (**스타벅스**): 과거 기록상 위험도 **0.1 (10%)** -> 생존확률 0.9
+
+**계산:**
+$$ Risk = 1 - (0.5 \times 0.8 \times 0.9) $$
+$$ Risk = 1 - 0.36 $$
+$$ \textbf{Result} = 0.64 \rightarrow \textbf{64\%} $$
+
+---
+## 5. 📡 API Specification Strategy
 Restful API 표준을 준수하며, 모든 응답은 공통 포맷(ApiResponse)을 사용합니다.
-### 4.1 Common Response Format
+### 5.1 Common Response Format
 ```JSON
 // Success
 {
@@ -139,7 +170,7 @@ Restful API 표준을 준수하며, 모든 응답은 공통 포맷(ApiResponse)�
   "path": "/api/v1/users"
 }
 ```
-### 4.2 Key Endpoints
+### 5.2 Key Endpoints
 | Domain | Method | URI | Description |
 | :--- | :--- | :--- | :--- |
 | **Auth** | `POST` | `/api/v1/auth/signup` | 회원가입 |
@@ -154,11 +185,12 @@ Restful API 표준을 준수하며, 모든 응답은 공통 포맷(ApiResponse)�
 | **Symptom** | `POST` | `/api/v1/symptoms` | 질병 발병 기록 저장 (통증 강도 포함) |
 | **Analysis** | `GET` | `/api/v1/analysis/risk` | **[Main]** 오늘/내일 발병 확률 예측 및 Top3 위험 요인 |
 | | `GET` | `/api/v1/analysis/chart` | 상세 분석 차트 데이터 (메뉴별/태그별/식당별 위험도) |
-## 5. 🚀 Deployment Strategy
-- Environment: Private Ubuntu Server (High Spec)
-- Method: Docker Compose
-- Containers:
-  1. welog-app (Spring Boot)
-  2. welog-db (PostgreSQL)
-  3. welog-redis (Redis)
-  4. welog-nginx (Reverse Proxy & SSL)
+## 6. 🚀 Deployment Strategy
+
+* **Target Environment:** Private Ubuntu Server (High Spec / 32GB RAM)
+* **Orchestration Tool:** Docker Compose
+* **Container Stack:**
+  1.  **`welog-app`**: Spring Boot Web Application (Port: 8080)
+  2.  **`welog-db`**: PostgreSQL Persistence Storage (Port: 5432)
+  3.  **`welog-redis`**: In-memory Cache & Session Store (Port: 6379)
+  4.  **`welog-nginx`**: Reverse Proxy & SSL Termination (Port: 80/443)
