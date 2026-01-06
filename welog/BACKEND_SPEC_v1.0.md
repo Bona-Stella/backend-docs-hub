@@ -115,10 +115,28 @@ CREATE INDEX idx_symptom_logs_user_date ON symptom_logs(user_id, symptom_date);
 Restful API 표준을 준수하며, 모든 응답은 공통 포맷(ApiResponse)을 사용합니다.
 ### 4.1 Common Response Format
 ```JSON
+// Success
 {
   "success": true,
-  "data": { ... }, 
-  "error": null
+  "status": 200,
+  "code": "OK",
+  "message": "Success",
+  "data": {
+    "id": 1,
+    "title": "게시글 제목"
+  },
+  "timestamp": "2025-01-01T12:30:02Z",
+  "path": "/api/v1/posts/1"
+}
+
+// Fail
+{
+  "success": false,
+  "status": 400,
+  "code": "INVALID_INPUT",
+  "message": "Request validation failed.",
+  "timestamp": "2025-01-01T12:30:02Z",
+  "path": "/api/v1/users"
 }
 ```
 ### 4.2 Key Endpoints
