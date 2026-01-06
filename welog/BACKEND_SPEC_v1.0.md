@@ -123,12 +123,15 @@ WeLog의 핵심 기능인 '발병 확률'을 계산하는 로직입니다.
 
 ### 4.2 Calculation Formula
 $$ P(TotalRisk) = 1 - \prod_{i=1}^{n} (1 - P(Factor_i)) $$
-
-1.  **Scope:** `NOW()` 기준 `User.digestion_time`(Default 18h) 이내에 섭취한 모든 `FoodLog`, `Tag`, `Restaurant` 수집.
-2.  **Individual Risk ($P(Factor)$):** 각 요소의 과거 데이터 조회.
-    *   $$ P(Factor) = \frac{\text{Count}(Factor \cap Symptom)}{\text{Count}(Total Factor)} $$
-    *   *데이터가 없거나 적을 경우(Cold Start), 가중치를 0으로 처리하거나 기본값 적용.*
-3.  **Aggregation:** 위 공식을 적용하여 최종 확률(%) 도출.
+**[최종 발병 확률 공식]**
+```text
+Final_Risk = 1 - ( (1 - Risk_Factor_1) * (1 - Risk_Factor_2) * ... * (1 - Risk_Factor_n) )
+```
+1. **Scope:** `NOW()` 기준 `User.digestion_time`(Default 18h) 이내에 섭취한 모든 `FoodLog`, `Tag`, `Restaurant` 수집.
+2. **Individual Risk (개별 위험도):** 각 요소의 과거 데이터 조회.
+    * `Risk_Factor = (해당 요소 먹고 아픈 횟수) / (해당 요소 먹은 총 횟수)`
+    * *데이터가 없거나 적을 경우(Cold Start), 가중치를 0으로 처리하거나 기본값 적용.*
+3. **Aggregation:** 위 공식을 적용하여 최종 확률(%) 도출.
 
 ### 4.3 Simulation Example
 **상황:** 사용자가 최근 18시간 내에 **[스타벅스]**에서 **[매운 라떼]**를 섭취함.
