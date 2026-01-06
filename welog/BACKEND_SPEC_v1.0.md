@@ -1,7 +1,7 @@
 # 🛠️ WeLog - V1.0 Backend Technical Spec
 
 > **WeLog** 백엔드 서버의 기술 스택, 아키텍처, 데이터베이스 스키마 및 API 명세를 정의합니다.  
-> **Target:** High-spec Private Server Deployment (Ubuntu, 32GB RAM)
+> **Target:** High-spec Private Server Deployment (Ubuntu Server 24.04)
 
 ---
 
