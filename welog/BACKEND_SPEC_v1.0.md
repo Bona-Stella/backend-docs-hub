@@ -121,9 +121,9 @@ WeLog의 핵심 기능인 '발병 확률'을 계산하는 로직입니다.
 
 이 방식을 통해 위험 요소가 많아질수록 확률은 100%에 수렴하며, 단순 합산 시 100%를 초과하는 오류를 방지합니다.
 
-### 4.2 Calculation Formula
+### 4.2 Calculation Formula  
 $$ P(TotalRisk) = 1 - \prod_{i=1}^{n} (1 - P(Factor_i)) $$  
-**[최종 발병 확률 공식]**
+**[최종 발병 확률 공식]**  
 ```text
 Final_Risk = 1 - ( (1 - Risk_Factor_1) * (1 - Risk_Factor_2) * ... * (1 - Risk_Factor_n) )
 ```
