@@ -3,7 +3,7 @@
 **WeLog 프로젝트**의 프론트엔드 연동을 위한 백엔드 가이드 문서입니다.
 서버 접속 정보, 테스트 계정, 그리고 **API 변경 내역(Changelog)**을 이곳에서 관리합니다.
 
-> **Current Version**: `v1.0.0`
+> **Current Version**: `v1.0.0`  
 > **Last Updated**: 2026-01-05
 
 ---
