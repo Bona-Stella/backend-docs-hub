@@ -10,8 +10,11 @@
 ---
 
 ## 🖌️ Design Asset
-- **Figma URL:** [여기에 피그마 링크를 붙여넣으세요]
-- **Design System:** [v1.0 Color / Typography / Components]
+- **Figma URL:** In Progress [여기에 피그마 링크를 붙여넣으세요]
+- **Design System:**
+  - **Color:** Dark Mode Base (`#121212`), Neon Red (`#FF453A`), Neon Mint (`#00E676`)
+  - **Typography:** Pretendard (Variable), Bold Titles / Regular Body
+  - **Concept:** Minimal Dark UI, Glassmorphism Cards, Rounded Corners
 
 ---
 
