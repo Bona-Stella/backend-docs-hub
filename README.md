@@ -34,6 +34,7 @@
 - **비고**: 현재 기본 계산 로직 구현 후 API 명세 작성 중입니다.
 
 ### 3. 프로젝트 폴더 구조
+```text
 📦 Project Root
  ┣ 📂 somnus
  ┃ ┣ 📜 README.md (Somnus)
@@ -44,7 +45,7 @@
  ┃ ┣ 📜 FUNCTIONAL_SPEC_v1.0.md
  ┃ ┗ 📜 README.md (WeLog)
  ┗ 📜 README.md
-
+```
 ---
 
 ## 📢 공통 공지사항 (Notice)
