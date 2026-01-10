@@ -89,11 +89,7 @@ DB 없이 브라우저의 **LocalStorage**를 사용하여 사용자 설정을 �
 ## 5. 디자인 가이드 (Style)
 
 - **Theme**: Dark Mode Only.
-- **Colors**:
-  - Background: `#000000` (Deep Black)
-  - Card/Modal: `#1C1C1E` (Dark Gray)
-  - **Primary**: `#8E85FF` (Soft Purple)
-  - Text: `#FFFFFF` (White), `#8E8E93` (Gray)
+- **Colors**: Figma 참조
 
 ---
 
