@@ -33,6 +33,18 @@
 - **주요 기능**: REM 수면 주기 계산, 기상/취침 시간 추천, 타이머 설정
 - **비고**: 현재 기본 계산 로직 구현 후 API 명세 작성 중입니다.
 
+### 3. 프로젝트 폴더 구조
+📦 Project Root
+ ┣ 📂 somnus
+ ┃ ┣ 📜 README.md (Somnus)
+ ┃ ┗ 📜 SPECIFICATION.md
+ ┣ 📂 welog
+ ┃ ┣ 📜 BACKEND_SPEC_v1.0.md
+ ┃ ┣ 📜 DESIGN_LOG_V1.0.md
+ ┃ ┣ 📜 FUNCTIONAL_SPEC_v1.0.md
+ ┃ ┗ 📜 README.md (WeLog)
+ ┗ 📜 README.md
+
 ---
 
 ## 📢 공통 공지사항 (Notice)
