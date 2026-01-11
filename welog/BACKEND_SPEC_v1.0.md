@@ -10,14 +10,14 @@
 
 | Category | Technology | Version / Note |
 | :--- | :--- | :--- |
-| **Language** | **Java** | **21 (LTS)** (Virtual Threads 활성화) |
-| **Framework** | **Spring Boot** | **3.4.x** (Latest Stable) |
-| **Build Tool** | **Gradle** | 8.x (Kotlin or Groovy DSL) |
+| **Language** | **Java** | **21.0.9 Eclipse Adoptium (LTS)** (Virtual Threads 활성화) |
+| **Framework** | **Spring Boot** | **4.0.1** (Latest Stable) |
+| **Build Tool** | **Gradle** | 2.2.20/4.0.28 (Kotlin/Groovy DSL) |
 | **Database** | **PostgreSQL** | 16.x or 17.x (Main DB) |
 | **Cache/NoSQL** | **Redis** | 7.x or 8.x (Caching, Refresh Token) |
 | **ORM** | **Spring Data JPA** | + **QueryDSL 5.0.0** (jakarta classifier) |
-| **Auth** | **JWT** | jjwt 0.12.x (Access/Refresh Token Strategy) |
-| **Docs** | **Swagger** | Springdoc-openapi-ui (API 문서 자동화) |
+| **Auth** | **JWT** | jjwt 0.12.5 (Access/Refresh Token Strategy) |
+| **Docs** | **Swagger** | Springdoc-openapi-ui 6.4.x (API 문서 자동화) |
 | **Deploy** | **Docker** | Docker Compose (DB, Redis, App 오케스트레이션) |
 
 ---
