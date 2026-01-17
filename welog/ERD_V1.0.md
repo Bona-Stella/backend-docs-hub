@@ -116,6 +116,37 @@
 | `symptom_count` | `INT` | | N | 0 | 일일 발병 횟수 |
 | `most_risk_factor` | `VARCHAR(100)` | | Y | | 당일 최고 위험 요인 |
 
+---
+
+## 4. 데이터 관계 (Relationships)
+
+주요 테이블 간의 참조 무결성 및 카디널리티(Cardinality) 정의입니다.
+
+### 4.1. 회원 (Member) 중심
+*   **Member (1) : MemberDisease (N)**
+    *   한 명의 회원은 여러 개의 관리 질병을 가질 수 있습니다.
+    *   `Cascade: ALL` (회원 탈퇴 시 질병 목록 삭제)
+*   **Member (1) : Favorite (N)**
+    *   한 명의 회원은 여러 개의 즐겨찾기를 가질 수 있습니다.
+    *   `Cascade: ALL`
+*   **Member (1) : Meal (N)**
+    *   한 명의 회원은 수많은 식사 기록을 남깁니다.
+    *   `Cascade: ALL`
+*   **Member (1) : Symptom (N)**
+    *   한 명의 회원은 수많은 증상 기록을 남깁니다.
+    *   `Cascade: ALL`
+
+### 4.2. 식사 (Meal) 중심
+*   **Meal (1) : MealDetail (N)**
+    *   하나의 식사 기록은 여러 개의 상세 요인(메뉴, 재료, 맛 등)을 포함합니다.
+    *   **생명주기:** `Meal`이 생성/삭제될 때 `MealDetail`도 함께 생성/삭제됩니다. (`Cascade: ALL`, `OrphanRemoval: true`)
+
+### 4.3. 분석 (Analysis) 중심
+*   **Member (1) : FactorScore (N)**
+    *   회원별로 각 요인(Factor)에 대한 위험도 점수가 N개 존재합니다.
+    *   `FactorScore`는 배치를 통해 생성/갱신되므로 `Cascade` 설정보다는 배치 로직에서 관리합니다.
+*   **Member (1) : DailyReport (N)**
+    *   회원별로 날짜마다 하나의 리포트가 생성됩니다.
 
 ## 5. ERD Diagram
 
