@@ -115,3 +115,77 @@
 | `daily_risk_score` | `DOUBLE` | | Y | | 일일 종합 위험도 |
 | `symptom_count` | `INT` | | N | 0 | 일일 발병 횟수 |
 | `most_risk_factor` | `VARCHAR(100)` | | Y | | 당일 최고 위험 요인 |
+
+
+```erDiagram
+    %% 1. 회원 및 설정
+    MEMBER ||--o{ MEMBER_DISEASE : "manages"
+    MEMBER ||--o{ FAVORITE : "registers"
+    
+    %% 2. 기록 도메인
+    MEMBER ||--o{ MEAL : "records"
+    MEMBER ||--o{ SYMPTOM : "suffers"
+    
+    MEAL ||--|{ MEAL_DETAIL : "contains"
+    
+    %% 3. 분석 도메인
+    MEMBER ||--o{ FACTOR_SCORE : "has_scores"
+    MEMBER ||--o{ DAILY_REPORT : "has_reports"
+
+    %% 테이블 정의
+    MEMBER {
+        bigint member_id PK
+        varchar email UK
+        int risk_criteria_time
+        varchar status
+    }
+
+    MEMBER_DISEASE {
+        bigint member_disease_id PK
+        bigint member_id FK
+        varchar disease_name
+        boolean is_primary
+    }
+
+    FAVORITE {
+        bigint favorite_id PK
+        bigint member_id FK
+        varchar name
+        varchar factor_type
+    }
+
+    MEAL {
+        bigint meal_id PK
+        bigint member_id FK
+        datetime eaten_at
+        varchar image_url
+    }
+
+    MEAL_DETAIL {
+        bigint meal_detail_id PK
+        bigint meal_id FK
+        varchar factor_name
+        varchar factor_type
+    }
+
+    SYMPTOM {
+        bigint symptom_id PK
+        bigint member_id FK
+        varchar disease_name
+        datetime occurred_at
+    }
+
+    FACTOR_SCORE {
+        bigint factor_score_id PK
+        bigint member_id FK
+        varchar factor_name
+        double risk_score
+    }
+
+    DAILY_REPORT {
+        bigint report_id PK
+        bigint member_id FK
+        date report_date
+        double daily_risk_score
+    }
+```
