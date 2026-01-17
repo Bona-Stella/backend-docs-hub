@@ -2,7 +2,7 @@
 
 > **Project Target:** v1.0 Launch  
 > **Tool:** Figma  
-> **Last Updated:** 2025-01-09 (날짜 입력)
+> **Last Updated:** 2026-01-17
 
 ## 📌 프로젝트 개요 (WeLog)
 **WeLog(위로그)**는 '위(Stomach)'와 '로그(Log)'를 합친 이름으로, 식습관 기록과 질병 발병 데이터를 분석하여 오늘과 내일의 위장 질환 발병 확률을 예측해 주는 헬스케어 서비스입니다.
