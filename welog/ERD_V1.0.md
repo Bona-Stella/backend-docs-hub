@@ -117,7 +117,7 @@
 | `most_risk_factor` | `VARCHAR(100)` | | Y | | 당일 최고 위험 요인 |
 
 
-```erDiagram
+erDiagram
     %% 1. 회원 및 설정
     MEMBER ||--o{ MEMBER_DISEASE : "manages"
     MEMBER ||--o{ FAVORITE : "registers"
@@ -188,4 +188,3 @@
         date report_date
         double daily_risk_score
     }
-```
