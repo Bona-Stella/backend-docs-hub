@@ -46,70 +46,104 @@ com.welog.server
 ## 3. 🗄️ Database Schema (ERD & DDL)
 PostgreSQL 기준 DDL입니다. 네이밍 컨벤션은 snake_case를 따릅니다.
 ```SQL
--- 1. Users (사용자)
-CREATE TABLE users (
-    user_id             BIGSERIAL PRIMARY KEY,
+-- 👤 1. 회원 (Members)
+CREATE TABLE members (
+    member_id           BIGSERIAL PRIMARY KEY,
     email               VARCHAR(100) NOT NULL UNIQUE,
     password            VARCHAR(255) NOT NULL,
     nickname            VARCHAR(50) NOT NULL,
-    digestion_time      INTEGER DEFAULT 18, -- 소화 시간 설정 (단위: 시간)
-    role                VARCHAR(20) DEFAULT 'USER',
-    profile_image_url   VARCHAR(255),
-    created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    profile_image_url   VARCHAR(512),
+    risk_criteria_time  INTEGER NOT NULL DEFAULT 18,
+    role                VARCHAR(20) NOT NULL DEFAULT 'USER',
+    status              VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+    provider            VARCHAR(20),
+    provider_id         VARCHAR(255),
+    fcm_token           VARCHAR(512),
+    created_at          TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
--- 2. Diseases (관리 질병)
-CREATE TABLE diseases (
-    disease_id          BIGSERIAL PRIMARY KEY,
-    user_id             BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+-- 🏥 2. 관리 질병 (Member Diseases)
+CREATE TABLE member_diseases (
+    member_disease_id   BIGSERIAL PRIMARY KEY,
+    member_id           BIGINT NOT NULL,
+    disease_name        VARCHAR(100) NOT NULL,
+    is_primary          BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at          TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_member_disease_user FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE
+);
+
+-- ⭐ 3. 즐겨찾기 (Favorites)
+CREATE TABLE favorites (
+    favorite_id         BIGSERIAL PRIMARY KEY,
+    member_id           BIGINT NOT NULL,
     name                VARCHAR(100) NOT NULL,
-    created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    factor_type         VARCHAR(20) NOT NULL,
+    CONSTRAINT fk_favorite_user FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE
 );
 
--- 3. Tags (태그 사전 - 재료/맛/상황 등)
-CREATE TABLE tags (
-    tag_id              BIGSERIAL PRIMARY KEY,
-    name                VARCHAR(50) NOT NULL UNIQUE,
-    tag_type            VARCHAR(20) DEFAULT 'INGREDIENT', 
-    -- Enum: INGREDIENT(재료), TASTE(맛), TEMP(온도), TEXTURE(식감), SITUATION(상황), ETC
-    created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- 🍽 4. 식사 기록 (Meals)
+CREATE TABLE meals (
+    meal_id             BIGSERIAL PRIMARY KEY,
+    member_id           BIGINT NOT NULL,
+    image_url           VARCHAR(512),
+    eaten_at            TIMESTAMP NOT NULL,
+    created_at          TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_meal_user FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE
 );
+-- Index for analysis
+CREATE INDEX idx_meals_eaten_at ON meals(eaten_at);
 
--- 4. FoodLogs (음식 섭취 기록)
-CREATE TABLE food_logs (
-    food_id             BIGSERIAL PRIMARY KEY,
-    user_id             BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-    menu_name           VARCHAR(100) NOT NULL,
-    restaurant_name     VARCHAR(100),
-    eat_date            TIMESTAMP NOT NULL, -- 실제 섭취 시간
-    is_excluded         BOOLEAN DEFAULT FALSE, -- 분석 제외 여부
-    image_url           VARCHAR(255),
-    created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- 🏷 5. 식사 상세 요인 (Meal Details)
+CREATE TABLE meal_details (
+    meal_detail_id      BIGSERIAL PRIMARY KEY,
+    meal_id             BIGINT NOT NULL,
+    factor_name         VARCHAR(100) NOT NULL,
+    factor_type         VARCHAR(20) NOT NULL,
+    CONSTRAINT fk_meal_detail_meal FOREIGN KEY (meal_id) REFERENCES meals(meal_id) ON DELETE CASCADE
 );
+-- Index for search & stats
+CREATE INDEX idx_meal_details_name ON meal_details(factor_name);
 
--- 5. FoodTagMap (음식-태그 연결)
-CREATE TABLE food_tag_map (
-    map_id              BIGSERIAL PRIMARY KEY,
-    food_id             BIGINT NOT NULL REFERENCES food_logs(food_id) ON DELETE CASCADE,
-    tag_id              BIGINT NOT NULL REFERENCES tags(tag_id) ON DELETE CASCADE
-);
-
--- 6. SymptomLogs (발병 기록)
-CREATE TABLE symptom_logs (
+-- ⚡ 6. 증상 기록 (Symptoms)
+CREATE TABLE symptoms (
     symptom_id          BIGSERIAL PRIMARY KEY,
-    user_id             BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-    disease_id          BIGINT NOT NULL REFERENCES diseases(disease_id) ON DELETE CASCADE,
-    symptom_date        TIMESTAMP NOT NULL, -- 발병 시간
-    severity            INTEGER DEFAULT 3, -- 통증 강도 (1~5)
-    created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    member_id           BIGINT NOT NULL,
+    disease_name        VARCHAR(100) NOT NULL,
+    occurred_at         TIMESTAMP NOT NULL,
+    created_at          TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_symptom_user FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE
+);
+-- Index for analysis
+CREATE INDEX idx_symptoms_occurred_at ON symptoms(occurred_at);
+
+-- 📊 7. 위험도 점수표 (Factor Scores - Batch Result)
+CREATE TABLE factor_scores (
+    factor_score_id     BIGSERIAL PRIMARY KEY,
+    member_id           BIGINT NOT NULL,
+    factor_name         VARCHAR(100) NOT NULL,
+    eat_count           INTEGER NOT NULL DEFAULT 0,
+    sick_count          INTEGER NOT NULL DEFAULT 0,
+    risk_score          DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    updated_at          TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_factor_score_user FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE,
+    CONSTRAINT uk_factor_score UNIQUE (member_id, factor_name)
 );
 
--- Indexes for Performance
-CREATE INDEX idx_food_logs_user_date ON food_logs(user_id, eat_date);
-CREATE INDEX idx_symptom_logs_user_date ON symptom_logs(user_id, symptom_date);
+-- 📅 8. 통계 리포트 (Daily Reports)
+CREATE TABLE daily_reports (
+    report_id           BIGSERIAL PRIMARY KEY,
+    member_id           BIGINT NOT NULL,
+    report_date         DATE NOT NULL,
+    daily_risk_score    DOUBLE PRECISION,
+    symptom_count       INTEGER NOT NULL DEFAULT 0,
+    most_risk_factor    VARCHAR(100),
+    CONSTRAINT fk_daily_report_user FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE,
+    CONSTRAINT uk_daily_report UNIQUE (member_id, report_date)
+);
+-- Index for calendar
+CREATE INDEX idx_report_date ON daily_reports(report_date);
 ```
 
 ## 4. 🧠 Core Algorithm (Risk Scoring Logic)
