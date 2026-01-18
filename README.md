@@ -42,6 +42,7 @@
  ┣ 📂 welog
  ┃ ┣ 📜 BACKEND_SPEC_v1.0.md
  ┃ ┣ 📜 DESIGN_LOG_V1.0.md
+ ┃ ┣ 📜 ERD_V1.0.md
  ┃ ┣ 📜 FUNCTIONAL_SPEC_v1.0.md
  ┃ ┗ 📜 README.md (WeLog)
  ┗ 📜 README.md
@@ -49,6 +50,8 @@
 ---
 
 ## 📢 공통 공지사항 (Notice)
+- **[2026-01-18]** `WeLog` UI/UX 디자인(Figma) v0.7이 업데이트 되었습니다.
+- **[2026-01-18]** `WeLog` ERD 설계서가 추가되었습니다.
 - **[2026-01-06]** `Somnus` UI/UX 디자인(Figma) v1.0이 업데이트 되었습니다.
 - **[2026-01-06]** `WeLog` 백엔드·기능 명세서 및 디자인 로그 문서가 추가되었습니다.
 - **[2026-01-06]** `Somnus` 프론트 기능 명세서가 추가되었습니다.
