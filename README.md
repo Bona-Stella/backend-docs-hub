@@ -50,6 +50,7 @@
 ---
 
 ## 📢 공통 공지사항 (Notice)
+- **[2026-01-25]** `WeLog` Google SSO Project 생성 및 연동되었습니다.
 - **[2026-01-22]** `WeLog` Resend -> Email(@welog.comma.my) 생성되었습니다.
 - **[2026-01-18]** `WeLog` UI/UX 디자인(Figma) v0.6이 업데이트 되었습니다.
 - **[2026-01-18]** `WeLog` ERD 설계서가 추가되었습니다.
