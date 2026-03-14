@@ -15,7 +15,7 @@ API 요청을 보낼 기본 Base URL입니다.
 | 환경 (Env) | 상태 (Status) | Base URL | 비고 |
 | :--- | :---: | :--- | :--- |
 | **Local** | 💻 My PC | `http://localhost:8080` | 로컬 개발용 |
-| **Dev** | 🟡 Running | `http://dev-api.welog.com` | 개발 서버 (AWS EC2) |
+| **Dev** | 🟡 Running | `http://welog.comma.my` | 개발 서버 (AWS EC2) |
 | **Prod** | 🔴 Stop | `https://api.welog.com` | 운영 서버 (준비 중) |
 
 ---
