@@ -13,7 +13,7 @@
 
 | Project Name | Current Version | Stage | Last Updated | Link |
 | :--- | :---: | :---: | :---: | :---: |
-| **💩 WeLog (위장 질환 위험 예측)** | `v0.8.0` | 🟡 Dev | 2026-03-16 | [Go to Docs](./welog/README.md) |
+| **💩 WeLog (위장 질환 위험 예측)** | `v0.8.0` | 🟡 Dev | 2026-03-17 | [Go to Docs](./welog/README.md) |
 | **😴 Somnus (수면 사이클 계산)** | `v0.0.1` | 🔴 Local | 2026-01-05 | [Go to Docs](./somnus/README.md) |
 
 > **Stage 설명:**
