@@ -152,60 +152,110 @@
 
 ```mermaid
 erDiagram
-    MEMBER ||--o{ MEMBER_DISEASE : manages
-    MEMBER ||--o{ FAVORITE : registers
-    MEMBER ||--o{ MEAL : records
-    MEMBER ||--o{ SYMPTOM : suffers
-    MEMBER ||--o{ FACTOR_SCORE : has
-    MEMBER ||--o{ DAILY_REPORT : gets
+    MEMBERS ||--o| MEMBER_CONSENTS : "1:1"
+    MEMBERS ||--o{ FAVORITES : "1:N"
+    MEMBERS ||--o{ MEMBER_DISEASES : "1:N"
+    MEMBERS ||--o{ MEALS : "1:N"
+    MEMBERS ||--o{ SYMPTOMS : "1:N"
+    MEMBERS ||--o{ DAILY_REPORTS : "1:N"
+    MEMBERS ||--o{ FACTOR_SCORES : "1:N"
 
-    MEAL ||--|{ MEAL_DETAIL : contains
+    MEALS ||--o{ MEAL_DETAILS : "1:N"
 
-    MEMBER {
+    MEMBER_DISEASES ||--o{ SYMPTOMS : "1:N"
+
+    MEMBERS {
         bigint member_id PK
-        varchar email UK
+        varchar uuid "UK"
+        varchar email "UK"
+        varchar password
+        varchar nickname
+        varchar profile_image_url
         int risk_criteria_time
+        varchar member_role
+        varchar member_status
+        varchar provider
+        varchar provider_id
+        varchar fcm_token
+        datetime created_at
+        datetime updated_at
     }
 
-    MEMBER_DISEASE {
-        bigint member_disease_id PK
-        varchar disease_name
-        boolean is_primary
+    MEMBER_CONSENTS {
+        bigint consent_id PK
+        bigint member_id FK "UK"
+        boolean privacy_policy_agreed
+        boolean terms_of_service_agreed
+        boolean data_reset_agreed
+        varchar agreed_version
+        varchar agreed_ip
+        datetime agreed_at
     }
 
-    FAVORITE {
+    FAVORITES {
         bigint favorite_id PK
+        bigint member_id FK
         varchar name
         varchar factor_type
+        datetime created_at
+        datetime updated_at
     }
 
-    MEAL {
+    MEMBER_DISEASES {
+        bigint member_disease_id PK
+        bigint member_id FK
+        varchar disease_name
+        varchar emoji
+        boolean is_primary
+        datetime created_at
+        datetime updated_at
+    }
+
+    MEALS {
         bigint meal_id PK
-        datetime eaten_at
+        bigint member_id FK
         varchar image_url
+        datetime eaten_at
+        datetime created_at
+        datetime updated_at
     }
 
-    MEAL_DETAIL {
+    MEAL_DETAILS {
         bigint meal_detail_id PK
+        bigint meal_id FK
         varchar factor_name
         varchar factor_type
     }
 
-    SYMPTOM {
+    SYMPTOMS {
         bigint symptom_id PK
-        varchar disease_name
+        bigint member_id FK
+        bigint member_disease_id FK
         datetime occurred_at
+        datetime created_at
+        datetime updated_at
     }
 
-    FACTOR_SCORE {
-        bigint factor_score_id PK
-        varchar factor_name
-        double risk_score
-    }
-
-    DAILY_REPORT {
+    DAILY_REPORTS {
         bigint report_id PK
+        bigint member_id FK
         date report_date
         double daily_risk_score
+        int symptom_count
+        varchar most_risk_factor
+        datetime created_at
+        datetime updated_at
+    }
+
+    FACTOR_SCORES {
+        bigint factor_score_id PK
+        bigint member_id FK
+        varchar factor_name
+        varchar factor_type
+        int eat_count
+        int sick_count
+        double risk_score
+        datetime created_at
+        datetime updated_at
     }
 ```
