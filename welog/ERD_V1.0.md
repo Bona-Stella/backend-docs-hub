@@ -137,6 +137,7 @@ Symptom onset records linked to diseases.
 #### [Table: factor_scores]
 Aggregated risk metrics per factor.
 - **Constraints**: Composite Unique Key (`member_id`, `factor_name`, `factor_type`)
+
 | Name | Type | Nullable | Description |
 | :--- | :--- | :--- | :--- |
 | member_id | BIGINT | N | Associated Member |
