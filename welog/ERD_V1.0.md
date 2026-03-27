@@ -1,168 +1,169 @@
-# 📊 Welog Database Design Specification (v1.0.0)
+# 📊 Welog 데이터베이스 설계 명세서 (v1.0.0)
 
-## 1. Overview
-This document provides a detailed specification of the database schema for the **Welog** server. The design follows RDBMS best practices for normalization, data integrity, and performance.
+## 1. 개요 (Overview)
+본 문서는 **Welog** 서버의 데이터베이스 스키마에 대한 상세 명세를 제공합니다. RDBMS의 베스트 프렉티스를 준수하여 정규화, 데이터 무결성 및 성능을 고려하여 설계되었습니다.
 
-### 1.1 Purpose
-- To provide a clear structural overview of the system's data model.
-- To serve as a reference for backend developers and database administrators.
-- To ensure consistent data management across the service.
-
----
-
-## 2. General Conventions
-### 2.1 Naming Rules
-- **Tables**: Snake-case, plural (e.g., `members`, `daily_reports`).
-- **Columns**: Snake-case, singular (e.g., `member_id`, `created_at`).
-- **Keys**:
-  - Primary Key: `[table_singular]_id` (e.g., `member_id`).
-  - Foreign Key: `[target_table_singular]_id`.
-
-### 2.2 Audit Columns
-All primary entities must inherit from `BaseTimeEntity` and include:
-- `created_at`: `DATETIME` (Not Null, Updatable: False)
-- `updated_at`: `DATETIME` (Not Null)
+### 1.1 목적
+- 시스템 데이터 모델의 명확한 구조적 개요 제공
+- 백엔드 개발자 및 데이터베이스 관리자를 위한 참조 자료
+- 서비스 전반에 걸친 일관된 데이터 관리 보장
 
 ---
 
-## 3. Entity Relationship Diagram (ERD)
+## 2. 일반 규칙 (General Conventions)
+### 2.1 명명 규칙 (Naming Rules)
+- **테이블(Tables)**: 스네이크 케이스(Snake-case), 복수형 (예: `members`, `daily_reports`).
+- **컬럼(Columns)**: 스네이크 케이스(Snake-case), 단수형 (예: `member_id`, `created_at`).
+- **키(Keys)**:
+  - 기본키(Primary Key): `[테이블_단수형]_id` (예: `member_id`).
+  - 외래키(Foreign Key): `[대상_테이블_단수형]_id`.
+
+### 2.2 감사 컬럼 (Audit Columns)
+모든 주요 엔티티는 `BaseTimeEntity`를 상속하며 다음 컬럼을 포함합니다:
+- `created_at`: `DATETIME` (Not Null, 수정 불가) - 생성 일시
+- `updated_at`: `DATETIME` (Not Null) - 최종 수정 일시
+
+---
+
+## 3. 개체 관계도 (Entity Relationship Diagram)
 
 ```mermaid
 erDiagram
-    MEMBERS ||--o| MEMBER_CONSENTS : "1:1"
-    MEMBERS ||--o{ FAVORITES : "1:N"
-    MEMBERS ||--o{ MEMBER_DISEASES : "1:N"
-    MEMBERS ||--o{ MEALS : "1:N"
-    MEMBERS ||--o{ SYMPTOMS : "1:N"
-    MEMBERS ||--o{ DAILY_REPORTS : "1:N"
-    MEMBERS ||--o{ FACTOR_SCORES : "1:N"
+    MEMBERS ||--o| MEMBER_CONSENTS : "1:1 관계"
+    MEMBERS ||--o{ FAVORITES : "1:N 관계"
+    MEMBERS ||--o{ MEMBER_DISEASES : "1:N 관계"
+    MEMBERS ||--o{ MEALS : "1:N 관계"
+    MEMBERS ||--o{ SYMPTOMS : "1:N 관계"
+    MEMBERS ||--o{ DAILY_REPORTS : "1:N 관계"
+    MEMBERS ||--o{ FACTOR_SCORES : "1:N 관계"
 
-    MEALS ||--o{ MEAL_DETAILS : "1:N"
-    MEMBER_DISEASES ||--o{ SYMPTOMS : "1:N"
+    MEALS ||--o{ MEAL_DETAILS : "1:N 관계"
+    MEMBER_DISEASES ||--o{ SYMPTOMS : "1:N 관계"
 
     MEMBERS {
-        bigint member_id PK
-        varchar uuid UK
-        varchar email UK
-        varchar password
-        varchar nickname
-        int risk_criteria_time
-        varchar member_role
-        varchar member_status
-        datetime created_at
-        datetime updated_at
+        bigint member_id PK "회원 식별자"
+        varchar uuid UK "공개용 고유 식별자"
+        varchar email UK "로그인 이메일"
+        varchar password "해시된 비밀번호"
+        varchar nickname "사용자 닉네임"
+        int risk_criteria_time "위험 분석 기준 시간"
+        varchar member_role "권한 (USER/ADMIN)"
+        varchar member_status "상태 (ACTIVE/PENDING)"
+        datetime created_at "생성일"
+        datetime updated_at "수정일"
     }
 
     MEALS {
-        bigint meal_id PK
-        bigint member_id FK
-        datetime eaten_at
-        datetime created_at
+        bigint meal_id PK "식사 식별자"
+        bigint member_id FK "회원 식별자"
+        datetime eaten_at "섭취 일시"
+        datetime created_at "기록일"
     }
 
     SYMPTOMS {
-        bigint symptom_id PK
-        bigint member_id FK
-        bigint member_disease_id FK
-        datetime occurred_at
+        bigint symptom_id PK "증상 식별자"
+        bigint member_id FK "회원 식별자"
+        bigint member_disease_id FK "관련 질병 식별자"
+        datetime occurred_at "증상 발병 일시"
     }
 ```
 
 ---
 
-## 4. Logical Schema Definitions
+## 4. 논리적 스키마 정의 (Logical Schema Definitions)
 
-### 4.1 Account Management Domain
+### 4.1 계정 관리 도메인 (Account Management Domain)
 
 #### [Table: members]
-Primary user account information and preferences.
-| Name | Type | Nullable | Key | Default | Description |
+사용자의 기본 계정 정보 및 설정.
+| 컬럼명 | 타입 | Null 허용 | 키 | 기본값 | 설명 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| member_id | BIGINT | N | PK | | Internal ID |
-| uuid | VARCHAR(36) | N | UK | | Public identifier for S3/API |
-| email | VARCHAR(100) | N | UK | | User login email |
-| password | VARCHAR(255) | N | | | Hashed password |
-| nickname | VARCHAR(50) | N | | | User display name |
-| risk_criteria_time | INT | N | | 120 | Golden time threshold (min) |
-| member_role | VARCHAR(20) | N | | USER | RBAC: USER, ADMIN |
-| member_status | VARCHAR(20) | N | | PENDING | ACTIVE, PENDING, DELETED |
-| provider | VARCHAR(50) | Y | | | google, kakao, etc. |
-| fcm_token | VARCHAR(255) | Y | | | Firebase Cloud Messaging token |
+| member_id | BIGINT | N | PK | | 내부 식별 ID |
+| uuid | VARCHAR(36) | N | UK | | S3 경로 및 API 노출용 식별자 |
+| email | VARCHAR(100) | N | UK | | 사용자 로그인 이메일 |
+| password | VARCHAR(255) | N | | | 암호화된 비밀번호 |
+| nickname | VARCHAR(50) | N | | | 사용자 표시 닉네임 |
+| risk_criteria_time | INT | N | | 120 | 증상 분석 골든타임 기준(분) |
+| member_role | VARCHAR(20) | N | | USER | RBAC 권한: USER, ADMIN |
+| member_status | VARCHAR(20) | N | | PENDING | 상태: ACTIVE, PENDING, DELETED |
+| provider | VARCHAR(50) | Y | | | OAuth 제공자 (google, kakao 등) |
+| fcm_token | VARCHAR(255) | Y | | | Firebase 디바이스 토큰 |
 
 #### [Table: member_consents]
-Terms of service and privacy policy agreements.
-| Name | Type | Nullable | Key | Description |
+서비스 이용약관 및 개인정보 처리방침 동의 기록.
+| 컬럼명 | 타입 | Null 허용 | 키 | 설명 |
 | :--- | :--- | :--- | :--- | :--- |
-| consent_id | BIGINT | N | PK | Record ID |
-| member_id | BIGINT | N | FK, UK | Associated Member ID |
-| privacy_policy_agreed | BOOLEAN | N | | Consent to privacy policy |
-| terms_of_service_agreed| BOOLEAN | N | | Consent to Terms of Service |
-| agreed_version | VARCHAR(20) | N | | Version of the policy agreed upon |
+| consent_id | BIGINT | N | PK | 동의 기록 식별자 |
+| member_id | BIGINT | N | FK, UK | 관련 회원 식별자 |
+| privacy_policy_agreed | BOOLEAN | N | | 개인정보 처리방침 동의 여부 |
+| terms_of_service_agreed| BOOLEAN | N | | 서비스 이용약관 동의 여부 |
+| agreed_version | VARCHAR(20) | N | | 동의 당시의 정책 버전 |
 
 ---
 
-### 4.2 Record & Activity Domain
+### 4.2 기록 및 활동 도메인 (Record & Activity Domain)
 
 #### [Table: meals]
-Top-level intake event metadata.
-| Name | Type | Nullable | Key | Description |
+식사 섭취 이벤트에 대한 상위 메타데이터.
+| 컬럼명 | 타입 | Null 허용 | 키 | 설명 |
 | :--- | :--- | :--- | :--- | :--- |
-| meal_id | BIGINT | N | PK | Meal record ID |
-| member_id | BIGINT | N | FK | Owner Member ID |
-| eaten_at | DATETIME | N | | Time of consumption |
-| image_url | VARCHAR(512) | Y | | S3 Image URL |
+| meal_id | BIGINT | N | PK | 식사 기록 식별자 |
+| member_id | BIGINT | N | FK | 소유 회원 식별자 |
+| eaten_at | DATETIME | N | | 실제 음식 섭취 일시 |
+| image_url | VARCHAR(512) | Y | | S3에 저장된 식사 사진 URL |
 
 #### [Table: meal_details]
-Granular components of a meal intake.
-| Name | Type | Nullable | Key | Description |
+식사에 포함된 구체적인 요인들.
+| 컬럼명 | 타입 | Null 허용 | 키 | 설명 |
 | :--- | :--- | :--- | :--- | :--- |
-| meal_detail_id | BIGINT | N | PK | Detail item ID |
-| meal_id | BIGINT | N | FK | Parent Meal ID |
-| factor_name | VARCHAR(100) | N | | Name of food/ingredient/tag |
-| factor_type | VARCHAR(20) | N | | Category (MENU, PLACE, etc.) |
+| meal_detail_id | BIGINT | N | PK | 상세 항목 식별자 |
+| meal_id | BIGINT | N | FK | 부모 식사 식별자 |
+| factor_name | VARCHAR(100) | N | | 음식/재료/태그 이름 |
+| factor_type | VARCHAR(20) | N | | 요인 분류 (MENU, PLACE 등) |
 
 #### [Table: symptoms]
-Symptom onset records linked to diseases.
-| Name | Type | Nullable | Key | Description |
+질병과 연관된 증상 발병 기록.
+| 컬럼명 | 타입 | Null 허용 | 키 | 설명 |
 | :--- | :--- | :--- | :--- | :--- |
-| symptom_id | BIGINT | N | PK | Symptom record ID |
-| member_id | BIGINT | N | FK | Owner Member ID |
-| member_disease_id | BIGINT | N | FK | Related Disease ID |
-| occurred_at | DATETIME | N | | Time of symptom onset |
+| symptom_id | BIGINT | N | PK | 증상 기록 식별자 |
+| member_id | BIGINT | N | FK | 소유 회원 식별자 |
+| member_disease_id | BIGINT | N | FK | 관련 질병 식별자 |
+| occurred_at | DATETIME | N | | 증상 발병 일시 |
 
 ---
 
-### 4.3 Statistics & Analysis Domain
+### 4.3 통계 및 분석 도메인 (Statistics & Analysis Domain)
 
 #### [Table: factor_scores]
-Aggregated risk metrics per factor.
-**Constraints**: Composite Unique Key (`member_id`, `factor_name`, `factor_type`)  
-| Name | Type | Nullable | Description |
+요인별 누적 위험 지표.
+- **제약 조건**: 복합 유니크 키 (`member_id`, `factor_name`, `factor_type`)
+  
+| 컬럼명 | 타입 | Null 허용 | 설명 |
 | :--- | :--- | :--- | :--- |
-| member_id | BIGINT | N | Associated Member |
-| factor_name | VARCHAR(100) | N | Key factor name |
-| factor_type | VARCHAR(20) | N | Factor category |
-| eat_count | INT | N | Total times consumed |
-| sick_count | INT | N | Times associated with symptoms |
-| risk_score | DOUBLE | N | Calculated risk (0-100) |
+| member_id | BIGINT | N | 관련 회원 식별자 |
+| factor_name | VARCHAR(100) | N | 요인 이름 |
+| factor_type | VARCHAR(20) | N | 요인 분류 |
+| eat_count | INT | N | 총 섭취/노출 횟수 |
+| sick_count | INT | N | 증상과 연관된 횟수 |
+| risk_score | DOUBLE | N | 계산된 위험 점수 (0-100) |
 
 ---
 
-## 5. Domain Codes (Enums)
+## 5. 도메인 코드 (Enums)
 
 ### 5.1 FactorType
-Used in `meal_details`, `favorites`, and `factor_scores`.
-| Code | Description | Example |
+`meal_details`, `favorites`, `factor_scores` 테이블에서 사용되는 분류 코드입니다.
+| 코드 | 설명 | 예시 |
 | :--- | :--- | :--- |
-| MENU | Specific food name | Bibimbap, Pasta |
-| INGREDIENT | Specific ingredient | Shrimp, Milk |
-| FLAVOR | Taste profiles | Spicy, Greasy |
-| RESTAURANT | Location / Venue | Office Cafeteria |
-| TIME | Temporal context | Late night, Empty stomach |
+| MENU | 구체적인 메뉴 이름 | 비빔밥, 파스타 |
+| INGREDIENT | 특정 식재료 | 새우, 우유 |
+| FLAVOR | 맛의 프로필 | 매운맛, 기름진 |
+| RESTAURANT | 식사 장소 | 회사 식당, 편의점 |
+| TIME | 시간대 및 상황 | 야식, 공복 |
 
 ---
 
-## 6. Revision History
-| Version | Date | Description | Author |
+## 6. 개정 이력 (Revision History)
+| 버전 | 날짜 | 내용 | 작성자 |
 | :--- | :--- | :--- | :--- |
-| v1.0.0 | 2026-03-27 | Initial Database Specification | Backend Team |
+| v1.0.0 | 2024-03-21 | 초기 데이터베이스 설계 명세서 작성 | 백엔드 팀 |
