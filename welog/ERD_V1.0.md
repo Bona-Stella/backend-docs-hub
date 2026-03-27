@@ -44,7 +44,7 @@
 사용자가 관리 중인 질병 목록입니다.
 
 | 컬럼명 | 타입 | 제약조건 | 설명 |
-| :--- | :--- | : :--- | :--- |
+| :--- | :--- | :--- | :--- |
 | member_disease_id | BIGINT | PK, AI | 질병 식별자 |
 | member_id | BIGINT | FK, NN | 회원 식별자 |
 | disease_name | VARCHAR(255) | NN | 질병 이름 |
