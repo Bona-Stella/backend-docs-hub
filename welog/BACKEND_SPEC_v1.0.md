@@ -11,7 +11,7 @@
 | Category | Technology | Version / Note |
 | :--- | :--- | :--- |
 | **Language** | **Java** | **25.0.2 Eclipse Adoptium (LTS)** (Virtual Threads 활성화) |
-| **Framework** | **Spring Boot** | **4.0.2** (Latest Stable) |
+| **Framework** | **Spring Boot** | **4.0.5** (Latest Stable) |
 | **Build Tool** | **Gradle** | 2.2.20/4.0.28 (Kotlin/Groovy DSL) |
 | **Database** | **PostgreSQL** | 17 (Main DB) |
 | **Cache/NoSQL** | **Redis** | 7.2 (Caching, Refresh Token) |
