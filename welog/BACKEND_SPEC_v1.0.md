@@ -6,7 +6,7 @@
 ---
 
 ## 1. 🏗️ Tech Stack (기술 스택)
-안정성과 생산성을 최우선으로 고려한 **Java 21 (LTS) & Spring Boot 3.4** 기반의 모던 스택입니다.
+안정성과 생산성을 최우선으로 고려한 **Java 25 (LTS) & Spring Boot 4.0** 기반의 모던 스택입니다.
 
 | Category | Technology | Version / Note |
 | :--- | :--- | :--- |
@@ -17,7 +17,7 @@
 | **Cache/NoSQL** | **Redis** | 7.2 (Caching, Refresh Token) |
 | **ORM** | **Spring Data JPA** | + **QueryDSL 5.0.0** (jakarta classifier) |
 | **Auth** | **JWT** | jjwt 0.12.6 (Access/Refresh Token Strategy) |
-| **Docs** | **Swagger** | Springdoc-openapi-ui 6.4.x (API 문서 자동화) |
+| **Docs** | **Swagger** | Springdoc-openapi-ui 3.1.x (API 문서 자동화) |
 | **Deploy** | **Docker** | Docker Compose (DB, Redis, App 오케스트레이션) |
 
 ---
