@@ -31,7 +31,6 @@ API 요청을 보낼 기본 Base URL입니다.
 | **User B** | `user2@welog.com` | `Passowrd1234!` | 일반 사용자 (게시글 작성용) |
 | **User C** | `user3@welog.com` | `Passowrd1234!` | 일반 사용자 (게시글 작성용) |
 | **User D** | `user4@welog.com` | `Passowrd1234!` | 일반 사용자 (게시글 작성용) |
-| **Guest** | - | - | 비로그인 상태 테스트 |
 
 > ⚠️ **주의**: `test01` 계정의 데이터는 매일 자정에 초기화됩니다.
 
