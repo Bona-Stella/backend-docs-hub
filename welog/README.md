@@ -27,10 +27,10 @@ API 요청을 보낼 기본 Base URL입니다.
 | Role | Username (ID) | Password | 설명 |
 | :--- | :--- | :--- | :--- |
 | **Admin** | `admin@welog.com` | `admin1234!` | 관리자 권한 (모든 글 삭제 가능) |
-| **User A** | `user1@welog.com` | `Passowrd1234!` | 일반 사용자 (게시글 작성용) |
-| **User B** | `user2@welog.com` | `Passowrd1234!` | 일반 사용자 (게시글 작성용) |
-| **User C** | `user3@welog.com` | `Passowrd1234!` | 일반 사용자 (게시글 작성용) |
-| **User D** | `user4@welog.com` | `Passowrd1234!` | 일반 사용자 (게시글 작성용) |
+| **User A** | `user1@welog.com` | `Passowrd1234!` | 일반 사용자 (야식광팬/야식 위주) |
+| **User B** | `user2@welog.com` | `Passowrd1234!` | 일반 사용자 (헬시걸/건강식 위주) |
+| **User C** | `user3@welog.com` | `Passowrd1234!` | 일반 사용자 (직장인A/직장인 위주) |
+| **User D** | `user4@welog.com` | `Passowrd1234!` | 일반 사용자 (비건러버/비건 위주) |
 
 > ⚠️ **주의**: `test01` 계정의 데이터는 매일 자정에 초기화됩니다.
 
