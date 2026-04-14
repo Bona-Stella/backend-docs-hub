@@ -15,10 +15,10 @@ API 요청을 보낼 기본 Base URL입니다.
 | 환경 (Env) | 상태 (Status) | Base URL | 비고 |
 | :--- | :---: | :--- | :--- |
 | **Local** | 💻 My PC | `http://localhost:8080` | 로컬 개발용 |
-| **Dev** | 🟡 Running | `http://api-welog.comma.my` | 개발 서버 (Docker) |
+| **Dev-API** | 🟡 Running | `http://api-welog.comma.my` | 개발 서버 (Docker) |
+| **Dev-PWA** | 🟡 Running | `http://welog.comma.my` | 프론트엔드 (Docker) |
+| **Dev-MinIO** | 🟡 Running | `http://s3-welog.comma.my` | 이미지 서빙 (Docker) |
 | **Prod** | 🔴 Stop | `https://api.welog.com` | 운영 서버 (준비 중) |
-| **PWA** | 🟡 Running | `http://welog.comma.my` | 프론트엔드 (Docker) |
-| **MinIO** | 🟡 Running | `http://s3-welog.comma.my` | 이미지 서빙 (Docker) |
 
 ---
 
@@ -36,7 +36,7 @@ API 요청을 보낼 기본 Base URL입니다.
 | **OAuth2** | Google Login | - | Google 소셜 로그인 지원 |
 
 > ⚠️ **주의**: 테스트 계정을 포함한 모든 데이터는 `매일 새벽 4시`마다 주기적으로 초기화됩니다.
-> 🔒 **보안**: Rate Limiting 적용 (검색 40회/분, 식사 3회/분, 증상 10회/일)
+> 🔒 **보안**: Rate Limiting 적용 (검색 40회/분, 식사기록 3회/분, 증상기록 10회/일 등)
 
 ---
 
