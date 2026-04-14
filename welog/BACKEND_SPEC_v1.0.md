@@ -12,13 +12,16 @@
 | :--- | :--- | :--- |
 | **Language** | **Java** | **25.0.2 Eclipse Adoptium (LTS)** (Virtual Threads 활성화) |
 | **Framework** | **Spring Boot** | **4.0.5** (Latest Stable) |
-| **Build Tool** | **Gradle** | 2.2.20/4.0.28 (Kotlin/Groovy DSL) |
+| **Build Tool** | **Gradle** | 9.4.0 (Groovy DSL) |
 | **Database** | **PostgreSQL** | 17 (Main DB) |
-| **Cache/NoSQL** | **Redis** | 7.2 (Caching, Refresh Token) |
+| **Cache/NoSQL** | **Redis + Redisson** | 7.2 (Caching, Refresh Token, Rate Limiting) |
 | **ORM** | **Spring Data JPA** | + **QueryDSL 5.0.0** (jakarta classifier) |
-| **Auth** | **JWT** | jjwt 0.12.6 (Access/Refresh Token Strategy) |
-| **Docs** | **Swagger** | Springdoc-openapi-ui 3.1.x (API 문서 자동화) |
-| **Deploy** | **Docker** | Docker Compose (DB, Redis, App 오케스트레이션) |
+| **Auth** | **JWT + OAuth2** | jjwt 0.13.0 (Access/Refresh Token) + Google OAuth2 |
+| **Security** | **Spring Security** | 7.0.2 + Bucket4j + Resilience4j |
+| **Storage** | **MinIO** | S3 Compatible Object Storage |
+| **Docs** | **Swagger/OpenAPI** | Springdoc-openapi-ui 3.0.2 (API 문서 자동화) |
+| **Testing** | **Testcontainers** | PostgreSQL, Redis 통합 테스트 |
+| **Deploy** | **Docker** | Docker Compose (PWA, API, MinIO 오케스트레이션) |
 
 ---
 
@@ -26,22 +29,23 @@
 유지보수와 도메인 응집도를 높이기 위한 **도메인형 패키지 구조**를 따릅니다.
 
 ```text
-com.welog.server
-├── common              // 전역 공통 모듈
-│   ├── config          // 설정 (Security, Swagger, QueryDSL, Redis 등)
-│   ├── exception       // Global Exception Handler
-│   └── response        // 공통 응답 포맷 (ApiResponse)
+com.github.stella.welog
 ├── domain              // 핵심 비즈니스 로직 (도메인별 분리)
-│   ├── member          // 사용자 (User)
-│   ├── disease         // 질병 (Disease)
-│   ├── food            // 음식 기록 (FoodLog, Tag, FoodTagMap)
-│   ├── symptom         // 증상/발병 기록 (SymptomLog)
-│   └── analysis        // 분석 알고리즘 (Risk Calculation Service)
-├── global              // 유틸리티 및 보안
-│   ├── auth            // JWT Provider, Security Filter
-│   └── util            // DateUtil, ImageUtil 등
+│   ├── admin           // 관리자 기능
+│   ├── analysis        // 분석 알고리즘 (Risk Calculation, Search)
+│   ├── auth            // 인증 및 인가 (Login, JWT, OAuth2)
+│   ├── feed            // 피드 조회
+│   ├── meal            // 식사 기록 (Meal, MealDetail)
+│   ├── member          // 사용자 (User, MemberDisease)
+│   └── symptom         // 증상/발병 기록 (Symptom)
+├── global              // 전역 공통 모듈
+│   ├── config          // 설정 (Security, Swagger, Redis, Rate Limiting 등)
+│   ├── exception       // Global Exception Handler
+│   ├── ratelimit       // Rate Limiting (Bucket4j, Redisson)
+│   ├── security       // JWT Provider, Security Filter, OAuth2
+│   └── util            // DateUtil, ImageUtil, S3Service 등
 └── infra               // 외부 인프라 연동
-    └── s3              // 이미지 스토리지 (Optional)
+    └── s3              // 이미지 스토리지 (MinIO)
 ```
 ## 3. 🗄️ Database Schema (ERD & DDL)
 PostgreSQL 기준 DDL입니다. 네이밍 컨벤션은 snake_case를 따릅니다.
@@ -218,26 +222,39 @@ Restful API 표준을 준수하며, 모든 응답은 공통 포맷(ApiResponse)�
 }
 ```
 ### 5.2 Key Endpoints
-| Domain | Method | URI | Description |
-| :--- | :--- | :--- | :--- |
-| **Auth** | `POST` | `/api/v1/auth/signup` | 회원가입 |
-| | `POST` | `/api/v1/auth/login` | 로그인 (Access + Refresh Token 발급) |
-| **User** | `GET` | `/api/v1/users/me` | 내 정보 및 설정 조회 (닉네임, 프로필, 소화시간 등) |
-| | `PUT` | `/api/v1/users/me/setting` | 사용자 설정 변경 (소화 시간, 목표 질병 등) |
-| **Food** | `POST` | `/api/v1/foods` | 음식 기록 저장 (이미지, 태그 포함) |
-| | `GET` | `/api/v1/foods` | 날짜별 음식 기록 조회 (Feed/Calendar 필터링) |
-| | `GET` | `/api/v1/foods/recent` | 최근 입력한 태그/메뉴 추천 (입력 편의성 제공) |
-| **Tag** | `GET` | `/api/v1/tags/categories` | UI 렌더링용 태그 버튼 목록 (맛, 온도, 상황, 식감 등) |
-| | `GET` | `/api/v1/tags/search` | 재료 태그 검색 (자동완성) |
-| **Symptom** | `POST` | `/api/v1/symptoms` | 질병 발병 기록 저장 (통증 강도 포함) |
-| **Analysis** | `GET` | `/api/v1/analysis/risk` | **[Main]** 오늘/내일 발병 확률 예측 및 Top3 위험 요인 |
-| | `GET` | `/api/v1/analysis/chart` | 상세 분석 차트 데이터 (메뉴별/태그별/식당별 위험도) |
+| Domain | Method | URI | Description | Rate Limit |
+| :--- | :--- | :--- | :--- | :--- |
+| **Auth** | `POST` | `/api/v1/auth/signup` | 회원가입 | - |
+| | `POST` | `/api/v1/auth/login` | 로그인 (Access + Refresh Token 발급) | - |
+| | `POST` | `/api/v1/auth/reissue` | 토큰 재발급 | - |
+| | `POST` | `/api/v1/auth/oauth2/google` | Google OAuth2 로그인 | - |
+| **User** | `GET` | `/api/v1/members/me` | 내 정보 및 설정 조회 | - |
+| | `PUT` | `/api/v1/members/me` | 사용자 정보 수정 | - |
+| **Meal** | `POST` | `/api/v1/meals` | 식사 기록 저장 (이미지, 태그 포함) | 3회/분 (사용자당) |
+| | `GET` | `/api/v1/meals` | 날짜별 식사 기록 조회 (Feed/Calendar) | - |
+| | `GET` | `/api/v1/meals/{id}` | 식사 상세 조회 | - |
+| | `PATCH` | `/api/v1/meals/{id}` | 식사 기록 수정 | 3회/분 (사용자당) |
+| | `DELETE` | `/api/v1/meals/{id}` | 식사 기록 삭제 | - |
+| **Symptom** | `POST` | `/api/v1/symptoms` | 증상 기록 저장 (10분 throttle + 일일 10회) | 10회/일 (사용자당) |
+| | `DELETE` | `/api/v1/symptoms/{id}` | 증상 기록 삭제 | - |
+| **Search** | `GET` | `/api/v1/search/suggest` | 검색어 자동완성 (최소 2자, 최대 15자) | 40회/분 (IP당) |
+| | `GET` | `/api/v1/search` | 검색 결과 조회 (페이징, Redis 캐시) | 10회/분 (IP당) |
+| | `POST` | `/api/v1/search/recent` | 최근 검색어 저장 | - |
+| | `DELETE` | `/api/v1/search/recent` | 최근 검색어 삭제 | - |
+| **Analysis** | `GET` | `/api/v1/analysis/home` | **[Main]** 오늘/내일 발병 확률 예측 및 Top3 위험 요인 | - |
+| | `GET` | `/api/v1/analysis/reports` | 상세 분석 차트 데이터 (메뉴별/태그별/식당별 위험도) | - |
+| **Feed** | `GET` | `/api/v1/feed` | 통합 피드 조회 (식사 + 증상) | - |
 ## 6. 🚀 Deployment Strategy
 
 * **Target Environment:** Private Ubuntu Server (High Spec / 32GB RAM)
 * **Orchestration Tool:** Docker Compose
 * **Container Stack:**
-  1.  **`welog-app`**: Spring Boot Web Application (Port: 8080)
-  2.  **`welog-db`**: PostgreSQL Persistence Storage (Port: 5432)
-  3.  **`welog-redis`**: In-memory Cache & Session Store (Port: 6379)
-  4.  **`welog-nginx`**: Reverse Proxy & SSL Termination (Port: 80/443)
+  1.  **`welog-pwa`**: Frontend PWA Application (Port: 80)
+  2.  **`welog-api`**: Spring Boot Web Application (Port: 8080)
+  3.  **`welog-postgres`**: PostgreSQL Persistence Storage (Port: 5432)
+  4.  **`welog-redis`**: In-memory Cache & Session Store (Port: 6379)
+  5.  **`welog-minio`**: Object Storage for Images (Port: 9000/9001)
+  6.  **`welog-minio-console`**: MinIO Web Console (Port: 9001)
+* **Reverse Proxy:** Nginx with SSL Termination (Port: 80/443)
+* **Health Checks:** Spring Boot Actuator (`/actuator/health`)
+* **Monitoring:** Resilience4j Circuit Breaker & Metrics

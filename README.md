@@ -13,8 +13,8 @@
 
 | Project Name | Current Version | Stage | Last Updated | Link |
 | :--- | :---: | :---: | :---: | :---: |
-| **💩 WeLog (위장 질환 위험 예측)** | `v0.8.0` | 🟡 Dev | 2026-04-10 | [Go to Docs](./welog/README.md) |
-| **😴 Somnus (수면 사이클 계산)** | `v0.0.1` | 🔴 Local | 2026-01-05 | [Go to Docs](./somnus/README.md) |
+| **💩 WeLog (위장 질환 위험 예측)** | `v0.8.0` | 🟡 Dev | 2026-04-14 | [Go to Docs](./welog/README.md) |
+| **😴 Somnus (수면 사이클 계산)** | `v1.0.0` | 🟢 Live | 2026-01-31 | [Go to Docs](./somnus/README.md) |
 
 > **Stage 설명:**
 > - 🟢 **Live**: 운영 서버 배포 완료 (안정적)
@@ -25,9 +25,11 @@
 
 ## 📂 Quick Links (프로젝트별 바로가기)
 
-### 1. [WeLog (장 건강 예보 서비스)](./welog/README.md)
-- **주요 기능**: 식단/발병 기록, 질병 발생 확률 예측 알고리즘, 건강 리포트
-- **비고**: 매운 음식 가중치 계산 로직이 `v0.0.1`에 반영되었습니다.
+### 1. [WeLog (장 건강 예보 서비스)](./README.md)
+- **주요 기능**: 식단/발병 기록, 질병 발생 확률 예측 알고리즘, 건강 리포트, 검색 및 자동완성
+- **기술 스택**: Java 25, Spring Boot 4.0.5, PostgreSQL 17, Redis 7.2, MinIO
+- **보안 기능**: JWT + OAuth2, Rate Limiting, WEBP 이미지 전용
+- **비고**: 검색 API, Rate Limiting, OAuth2 통합 완료. Docker 배포 환경 구축.
 
 ### 2. [Somnus (수면 사이클 비서)](./somnus/README.md)
 - **주요 기능**: REM 수면 주기 계산, 기상/취침 시간 추천, 타이머 설정
@@ -39,26 +41,23 @@
  ┣ 📂 somnus
  ┃ ┣ 📜 README.md (Somnus)
  ┃ ┗ 📜 SPECIFICATION.md
- ┣ 📂 welog
- ┃ ┣ 📜 BACKEND_SPEC_v1.0.md
- ┃ ┣ 📜 DESIGN_LOG_V1.0.md
- ┃ ┣ 📜 ERD_V1.0.md
- ┃ ┣ 📜 FUNCTIONAL_SPEC_v1.0.md
- ┃ ┗ 📜 README.md (WeLog)
- ┗ 📜 README.md
+ ┣ 📂 welog-server (WeLog 백엔드)
+ ┃ ┣ 📜 README.md (WeLog)
+ ┃ ┣ 📜 TECHNICAL_SPEC_V1.0.md
+ ┃ ┣ 📜 docker-compose.yml
+ ┃ ┣ 📜 .env.template
+ ┃ ┗ 📂 welog-server (소스 코드)
+ ┃   ┣ 📜 build.gradle
+ ┃   ┣ 📜 DB_SCHEMA.md
+ ┃   ┗ 📂 src/main/java
+ ┃   ┗ 📂 src/main/resources
+ ┗ 📜 README - Other.md (이 파일)
 ```
 ---
 
 ## 📢 공통 공지사항 (Notice)
-- **[2026-01-25]** `WeLog` Google SSO Project 생성 및 연동되었습니다.
-- **[2026-01-22]** `WeLog` Resend -> Email(@welog.comma.my) 생성되었습니다.
-- **[2026-01-18]** `WeLog` UI/UX 디자인(Figma) v0.6이 업데이트 되었습니다.
-- **[2026-01-18]** `WeLog` ERD 설계서가 추가되었습니다.
-- **[2026-01-06]** `Somnus` UI/UX 디자인(Figma) v1.0이 업데이트 되었습니다.
-- **[2026-01-06]** `WeLog` 백엔드·기능 명세서 및 디자인 로그 문서가 추가되었습니다.
-- **[2026-01-06]** `Somnus` 프론트 기능 명세서가 추가되었습니다.
-- **[2026-01-05]** 신규 프로젝트 `Somnus` 문서가 추가되었습니다.
-- **[2026-01-05]** 신규 프로젝트 `WeLog` 문서가 추가되었습니다.
+- **[2026-04-14]** `WeLog` Welog-PWA, API Server Dev 서버 배포 완료.
+- **[2026-04-14]** `WeLog` docker-compose.yml 재구성. PWA, API, MinIO 분리 배포 환경 구축.
 
 ---
 

@@ -103,6 +103,8 @@ erDiagram
 | **risk_criteria_time** | INT | N | | 증상 분석 골든타임 기준(분) |
 | **member_role** | VARCHAR(20) | N | | 권한 정책 (USER, ADMIN) |
 | **member_status** | VARCHAR(20) | N | | 계정 상태 (ACTIVE, PENDING, DELETED) |
+| **provider** | VARCHAR(20) | Y | | OAuth2 제공자 (GOOGLE, LOCAL) |
+| **provider_id** | VARCHAR(100) | Y | | OAuth2 제공자 ID |
 
 #### [Table: member_consents]
 | 컬럼명 | 타입 | Null | Key | 설명 |
@@ -172,4 +174,5 @@ erDiagram
 ## 6. 개정 이력 (Revision History)
 | 버전 | 날짜 | 내용 | 작성자 |
 | :--- | :--- | :--- | :--- |
+| v1.0.0 | 2026-04-14 | 최신 데이터베이스 설계 명세서 검토 및 확정 | Bona.Stella.91 |
 | v1.0.0 | 2026-03-27 | 초기 데이터베이스 설계 명세서 작성 | Bona.Stella.91 |
