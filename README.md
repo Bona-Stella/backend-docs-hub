@@ -41,12 +41,12 @@
  ┣ 📂 somnus
  ┃ ┣ 📜 README.md (Somnus)
  ┃ ┗ 📜 SPECIFICATION.md
- ┣ 📂 welog
- ┃ ┣ 📜 BACKEND_SPEC_v1.0.md
- ┃ ┣ 📜 DESIGN_LOG_V1.0.md
- ┃ ┣ 📜 ERD_V1.0.md
- ┃ ┣ 📜 FUNCTIONAL_SPEC_v1.0.md
- ┃ ┗ 📜 README.md (Welog)
+ ┗ 📂 welog
+   ┣ 📜 BACKEND_SPEC_v1.0.md
+   ┣ 📜 DESIGN_LOG_V1.0.md
+   ┣ 📜 ERD_V1.0.md
+   ┣ 📜 FUNCTIONAL_SPEC_v1.0.md
+   ┗ 📜 README.md (Welog)
 ```
 ---
 
