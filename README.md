@@ -41,17 +41,12 @@
  ┣ 📂 somnus
  ┃ ┣ 📜 README.md (Somnus)
  ┃ ┗ 📜 SPECIFICATION.md
- ┣ 📂 welog-server (WeLog 백엔드)
- ┃ ┣ 📜 README.md (WeLog)
- ┃ ┣ 📜 TECHNICAL_SPEC_V1.0.md
- ┃ ┣ 📜 docker-compose.yml
- ┃ ┣ 📜 .env.template
- ┃ ┗ 📂 welog-server (소스 코드)
- ┃   ┣ 📜 build.gradle
- ┃   ┣ 📜 DB_SCHEMA.md
- ┃   ┗ 📂 src/main/java
- ┃   ┗ 📂 src/main/resources
- ┗ 📜 README - Other.md (이 파일)
+ ┣ 📂 welog
+ ┃ ┣ 📜 BACKEND_SPEC_v1.0.md
+ ┃ ┣ 📜 DESIGN_LOG_V1.0.md
+ ┃ ┣ 📜 ERD_V1.0.md
+ ┃ ┣ 📜 FUNCTIONAL_SPEC_v1.0.md
+ ┃ ┗ 📜 README.md (Welog)
 ```
 ---
 
