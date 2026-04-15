@@ -88,9 +88,9 @@ API 요청을 보낼 기본 Base URL입니다.
 
 요청 파라미터(Request Body) 및 응답 값(Response)에 대한 상세 스펙은 아래 링크를 참고하세요.
 
-- **Swagger UI**: [http://api-welog.comma.my/docs](http://localhost:8080/docs) (로컬 개발 시)
-- **API Docs**: [http://api-welog.comma.my/api-docs](http://localhost:8080/api-docs) (OpenAPI JSON)
-- **Health Check**: [http://api-welog.comma.my/actuator/health](http://localhost:8080/actuator/health)
+- **Swagger UI**: [http://api-welog.comma.my/docs](api-welog.comma.my/docs) (로컬 개발 시)
+- **API Docs**: [http://api-welog.comma.my/api-docs](http://api-welog.comma.my/api-docs) (OpenAPI JSON)
+- **Health Check**: `http://api-welog.comma.my/actuator/health`
 
 ---
 
