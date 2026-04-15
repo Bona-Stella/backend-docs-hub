@@ -19,7 +19,7 @@ API 요청을 보낼 기본 Base URL입니다.
 | **Dev-PWA** | 🟡 Running | http://welog.comma.my | 프론트엔드 (Docker) |
 | **Dev-MinIO** | 🟡 Running | `http://s3-welog.comma.my` | 이미지 서빙 (Docker) |
 | **Prod** | 🔴 Stop | `https://api.welog.com` | 운영 서버 (준비 중) |
-| **Figma** | 🟢 Sharing | [https://api.welog.com/welog)](https://www.figma.com/design/FRyiPPXjFF2BmZ3eH6zJ4e/WeLog-UI-UX--%EC%A0%9C%ED%95%9C%EB%90%9C-%EB%B3%B4%EA%B8%B0-?m=auto&t=Qt2HIsKmfiMISzhz-1) | 운영 서버 (준비 중) |
+| **Figma** | 🟢 Sharing | [https://api.welog.com/welog](https://www.figma.com/design/FRyiPPXjFF2BmZ3eH6zJ4e/WeLog-UI-UX--%EC%A0%9C%ED%95%9C%EB%90%9C-%EB%B3%B4%EA%B8%B0-?m=auto&t=Qt2HIsKmfiMISzhz-1) | 운영 서버 (준비 중) |
 
 ---
 
