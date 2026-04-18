@@ -151,7 +151,7 @@ Restful API 표준을 준수하며, 모든 응답은 공통 포맷(ApiResponse)�
   2.  **`welog-api`**: Spring Boot Web Application (Port: 8080)
   3.  **`welog-postgres`**: PostgreSQL Persistence Storage (Port: 5432)
   4.  **`welog-redis`**: In-memory Cache & Session Store (Port: 6379)
-  5.  **`welog-minio`**: Object Storage for Images (Port: 9000/9001)
+  5.  **`welog-minio`**: Object Storage for Images (Port: 9000)
   6.  **`welog-minio-console`**: MinIO Web Console (Port: 9001)
 * **Reverse Proxy:** Nginx with SSL Termination (Port: 80/443)
 * **Health Checks:** Spring Boot Actuator (`/actuator/health`)
