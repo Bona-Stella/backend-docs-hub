@@ -46,41 +46,7 @@ API 요청을 보낼 기본 Base URL입니다.
 프론트엔드 연동에 영향을 주는 **API 변경 사항(CRUD)**을 최신순으로 기록합니다.
 
 #### [v0.8.0] - 2026-04-14
-- **✨ New Features**
-    - `GET /api/v1/search/suggest`: 검색어 자동완성 기능 (Rate Limit: 40회/분)
-    - `GET /api/v1/search`: 검색 결과 조회 (Rate Limit: 10회/분, Redis 캐싱)
-    - `POST /api/v1/search/recent`: 최근 검색어 저장
-    - `DELETE /api/v1/search/recent`: 최근 검색어 삭제
-    - OAuth2 Google 소셜 로그인 연동
-    - Bucket4j 기반 Rate Limiting 적용 (전체 API)
-    - WEBP 이미지 전용 업로드 보안 강화
-- **🛠 Updates**
-    - `POST /api/v1/meals`: 이미지 검증 로직 강화 (WEBP 전용)
-    - `POST /api/v1/symptoms`: 10분 throttle + 일일 10회 제한 적용
-    - JWT 토큰 만료 시간 조정 (Access: 30분, Refresh: 14일)
-- **🔧 Infrastructure**
-    - Docker Compose 완전 재구성 (PWA, API, MinIO 분리)
-    - Resilience4j Circuit Breaker 적용
-    - Testcontainers 통합 테스트 환경 구축
-
-#### [v0.7.0]
-- **✨ New Features**
-    - Google OAuth2 Client 연동
-    - Resend 이메일 서비스 연동 (회원가입/비밀번호 찾기)
-- **🛠 Updates**
-    - Spring Security 7.0.2 업그레이드
-
-#### [v0.6.0]
-- **✨ New Features**
-    - `POST /api/v1/meals`: 식사 기록 기능 구현 완료
-    - `GET /api/v1/meals`: 식사 목록 조회 (페이지네이션 적용)
-    - `POST /api/v1/symptoms`: 증상 기록 기능
-    - `GET /api/v1/analysis/home`: 메인 화면 분석 데이터
-    - `GET /api/v1/analysis/reports`: 통계 리포트
-- **🛠 Updates**
-    - `POST /auth/login`: 응답 값에 `refreshToken` 필드 추가됨
-- **🔥 Removals**
-    - `GET /api/temp`: 임시 테스트용 API 삭제
+- ** WeLog Welog-PWA, API Server Dev 서버 배포 완료.
 
 ---
 
@@ -91,6 +57,7 @@ API 요청을 보낼 기본 Base URL입니다.
 - **Swagger UI**: [http://api-welog.comma.my/docs](api-welog.comma.my/docs) (로컬 개발 시)
 - **API Docs**: [http://api-welog.comma.my/api-docs](http://api-welog.comma.my/api-docs) (OpenAPI JSON)
 - **Health Check**: `http://api-welog.comma.my/actuator/health`
+- ※ API 접근 계정은 개별 요청
 
 ---
 
