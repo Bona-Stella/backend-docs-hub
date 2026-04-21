@@ -155,4 +155,4 @@ Restful API 표준을 준수하며, 모든 응답은 공통 포맷(ApiResponse)�
   6.  **`welog-minio-console`**: MinIO Web Console (Port: 9001)
 * **Reverse Proxy:** Nginx with SSL Termination (Port: 80/443)
 * **Health Checks:** Spring Boot Actuator (`/actuator/health`)
-* **Monitoring:** Resilience4j Circuit Breaker & Metrics
+* **Rate Limit:** Resilience4j - Circuit Breaker & Bucket4j
