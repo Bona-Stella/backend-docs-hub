@@ -101,7 +101,6 @@ Restful API 표준을 준수하며, 모든 응답은 공통 포맷(`ApiResponse`
 }
 ```
 
-<<<<<<< Updated upstream
 * **Target Environment:** Private Ubuntu Server (High Spec / 32GB RAM)
 * **Orchestration Tool:** Docker Compose
 * **Container Stack:**
@@ -160,4 +159,3 @@ Restful API 표준을 준수하며, 모든 응답은 공통 포맷(`ApiResponse`
 *   **Email Circuit Breaker:** 외부 메일 전송 API(Resend) 장애 시 시스템 전체 지연을 방지하기 위해 50% 실패율 도달 시 30초간 차단.
 *   **Email Retry:** 네트워크 일시 오류 대응을 위해 최대 3회 재시도 (지수 백오프: 2s, 4s, 8s).
 *   **Actuator Monitoring:** `/actuator/health` 엔드포인트를 통해 각 인프라 요소의 상태를 실시간 체크.
->>>>>>> Stashed changes
