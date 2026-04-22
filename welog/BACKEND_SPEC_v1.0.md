@@ -14,14 +14,14 @@
 | **Framework** | **Spring Boot** | **4.0.5** (Latest Stable) |
 | **Build Tool** | **Gradle** | 9.4.0 (Groovy DSL) |
 | **Database** | **PostgreSQL** | 17 (Main DB) |
-| **Cache/NoSQL** | **Redis + Redisson** | 7.2 (Caching, Refresh Token, Rate Limiting) |
-| **ORM** | **Spring Data JPA** | + **QueryDSL 5.0.0** (jakarta classifier) |
-| **Auth** | **JWT + OAuth2** | jjwt 0.13.0 (Access/Refresh Token) + Google OAuth2 |
-| **Security** | **Spring Security** | 7.0.2 + Bucket4j + Resilience4j |
+| **Cache/NoSQL** | **Redis + Redisson** | 7.2 (Caching, Refresh Token, Rate Limiting, Throttling) |
+| **ORM** | **Spring Data JPA** | Hibernate 6.6+ |
+| **Auth** | **JWT + OAuth2** | jjwt 0.13.0 + Google OAuth2 |
+| **Resilience** | **Resilience4j** | Circuit Breaker & Retry (Email Service) |
+| **Security** | **Spring Security** | 7.0.2 + Bucket4j (Rate Limiting) |
 | **Storage** | **MinIO** | S3 Compatible Object Storage |
-| **Docs** | **Swagger/OpenAPI** | Springdoc-openapi-ui 3.0.2 (API 문서 자동화) |
+| **Docs** | **Swagger/OpenAPI** | Springdoc-openapi-ui 3.0.2 |
 | **Testing** | **Testcontainers** | PostgreSQL, Redis 통합 테스트 |
-| **Deploy** | **Docker** | Docker Compose (PWA, API, MinIO 오케스트레이션) |
 
 ---
 
@@ -32,118 +32,76 @@
 com.github.stella.welog
 ├── domain              // 핵심 비즈니스 로직 (도메인별 분리)
 │   ├── admin           // 관리자 기능
-│   ├── analysis        // 분석 알고리즘 (Risk Calculation, Search)
+│   ├── analysis        // 분석 알고리즘 (Risk Calculation, Batch, Search)
 │   ├── auth            // 인증 및 인가 (Login, JWT, OAuth2)
-│   ├── feed            // 피드 조회
-│   ├── meal            // 식사 기록 (Meal, MealDetail)
-│   ├── member          // 사용자 (User, MemberDisease)
+│   ├── feed            // 피드 조회 (식사 + 증상 통합 피드)
+│   ├── meal            // 식사 기록 (Meal, MealDetail, Image)
+│   ├── member          // 사용자 (User, MemberDisease, Password)
 │   └── symptom         // 증상/발병 기록 (Symptom)
 ├── global              // 전역 공통 모듈
 │   ├── config          // 설정 (Security, Swagger, Redis, Rate Limiting 등)
-│   ├── exception       // Global Exception Handler
-│   ├── ratelimit       // Rate Limiting (Bucket4j, Redisson)
-│   ├── security       // JWT Provider, Security Filter, OAuth2
-│   └── util            // DateUtil, ImageUtil, S3Service 등
+│   ├── exception       // Global Exception Handler & ErrorResponse
+│   ├── ratelimit       // Rate Limiting (Bucket4j, Redisson Aspect)
+│   ├── security        // JWT Provider, Security Filter, OAuth2
+│   └── util            // DateUtil, ImageUtil, S3Service, ServletUtil
 └── infra               // 외부 인프라 연동
-    └── s3              // 이미지 스토리지 (MinIO)
-```
-
-## 3. 🧠 Core Algorithm (Risk Scoring Logic)
-WeLog의 핵심 기능인 '발병 확률'을 계산하는 로직입니다.
-단순 합산 방식이 아닌, **여집합의 확률(Probability of Union)**을 사용하여 수학적 정합성을 보장합니다.
-
-### 4.1 Basic Concept
-> **Logic:** "현재 소화 중인 모든 음식/태그/식당을 독립적인 위험 인자로 간주하고, 이들로부터 **모두 살아남을(발병하지 않을) 확률을 구해 1에서 뺀 값**을 발병 확률로 정의한다."
-
-이 방식을 통해 위험 요소가 많아질수록 확률은 100%에 수렴하며, 단순 합산 시 100%를 초과하는 오류를 방지합니다.
-
-### 4.2 Calculation Formula  
-$$ P(TotalRisk) = 1 - \prod_{i=1}^{n} (1 - P(Factor_i)) $$  
-
-**[최종 발병 확률 공식]**  
-```text
-Final_Risk = 1 - ( (1 - Risk_Factor_1) * (1 - Risk_Factor_2) * ... * (1 - Risk_Factor_n) )
-```
-
-1. **Scope:** `NOW()` 기준 `User.digestion_time`(Default 18h) 이내에 섭취한 모든 `FoodLog`, `Tag`, `Restaurant` 수집.
-2. **Individual Risk (개별 위험도):** 각 요소의 과거 데이터 조회.
-    * `Risk_Factor = (해당 요소 먹고 아픈 횟수) / (해당 요소 먹은 총 횟수)`
-    * *데이터가 없거나 적을 경우(Cold Start), 가중치를 0으로 처리하거나 기본값 적용.*
-3. **Aggregation:** 위 공식을 적용하여 최종 확률(%) 도출.
-
-### 4.3 Simulation Example
-**상황:** 사용자가 최근 18시간 내에 **[스타벅스]**에서 **[매운 라떼]**를 섭취함.
-*   요소 1 (**매운맛**): 과거 기록상 위험도 **0.5 (50%)** -> 생존확률 0.5
-*   요소 2 (**라떼**): 과거 기록상 위험도 **0.2 (20%)** -> 생존확률 0.8
-*   요소 3 (**스타벅스**): 과거 기록상 위험도 **0.1 (10%)** -> 생존확률 0.9
-
-**계산:**
-$Risk = 1 - (0.5 \times 0.8 \times 0.9) = 0.64$, 결과값은 **64%**
-```text
-1. 생존 확률 곱셈 (모두 통과할 확률)
-   Survive_Prob = 0.5 * 0.8 * 0.9 = 0.36 (36%)
-
-2. 최종 발병 확률 (1에서 뺌)
-   Final_Risk = 1.0 - 0.36 = 0.64
-
-3. 결과
-   Result = 64%
+    └── s3              // 이미지 스토리지 (MinIO/S3 SDK)
 ```
 
 ---
+
+## 3. 🧠 Core Algorithm (Analysis & Risk Logic)
+WeLog는 비동기 배치 분석과 실시간 데이터 결합을 통해 정밀한 위험도를 산출합니다.
+
+### 3.1 Hybrid Analysis Strategy
+*   **Batch Layer:** 1시간 간격으로 모든 회원의 전체 로그를 재집계(`StatsAggregator`)하여 `FactorScore`(요인별 위험도)를 계산하고 DB에 저장합니다.
+*   **Real-time Layer:** 메인 화면 조회 시, 사용자의 `riskCriteriaTime`(기본 18시간) 내 식사 기록들과 DB에 저장된 `FactorScore`를 결합하여 현재 위험도를 즉시 산출합니다.
+
+### 3.2 Calculation Formula (Probability of Union)
+$$ P(TotalRisk) = 1 - \prod_{i=1}^{n} (1 - P(MealRisk_i)) $$
+
+1.  **Individual Factor Risk (개별 요인 위험도):**
+    `Risk = (해당 요인 섭취 후 증상 발생 횟수) / (전체 섭취 횟수)` (0.0 ~ 1.0)
+2.  **Meal Risk (식사별 위험도):**
+    한 식사에 포함된 여러 요인 중 **가장 높은 위험도(Max)**를 가진 요인을 해당 식사의 대표값으로 사용합니다.
+    $P(MealRisk) = \max(Risk_{factor1}, Risk_{factor2}, ...)$
+3.  **Total Risk (종합 위험도):**
+    분석 윈도우 내 모든 식사들이 각각 "안전할 확률"($1 - MealRisk$)을 모두 곱한 뒤, 이를 1에서 빼서 최종 발병 확률을 구합니다.
+
+### 3.3 Simulation Example
+**상황:** 최근 18시간 내에 두 번의 식사를 함.
+*   **식사 1 (점심):** [제육볶음(0.5)], [공기밥(0.01)], [식당A(0.1)] 섭취
+    *   대표 위험도: $\max(0.5, 0.01, 0.1) = \mathbf{0.5}$
+*   **식사 2 (간식):** [우유(0.3)], [초코쿠키(0.1)] 섭취
+    *   대표 위험도: $\max(0.3, 0.1) = \mathbf{0.3}$
+
+**최종 계산:**
+1.  각 식사가 안전할 확률: $(1 - 0.5) = 0.5$, $(1 - 0.3) = 0.7$
+2.  모두 안전할 확률 (생존 확률): $0.5 \times 0.7 = 0.35$ (35%)
+3.  최종 발병 확률: $1 - 0.35 = 0.65$ (**65%**)
+
+---
+
 ## 4. 📡 API Specification Strategy
-Restful API 표준을 준수하며, 모든 응답은 공통 포맷(ApiResponse)을 사용합니다.
+Restful API 표준을 준수하며, 모든 응답은 공통 포맷(`ApiResponse` / `ErrorResponse`)을 사용합니다.
+
 ### 4.1 Common Response Format
+#### [Success Response]
 ```JSON
-// Success
 {
   "success": true,
   "status": 200,
   "code": "OK",
   "message": "Success",
   "data": {
-    "id": 1,
-    "title": "게시글 제목"
+    "id": 123,
+    "name": "WeLog User"
   },
-  "timestamp": "2025-01-01T12:30:02Z",
-  "path": "/api/v1/posts/1"
-}
-
-// Fail
-{
-  "success": false,
-  "status": 400,
-  "code": "INVALID_INPUT",
-  "message": "Request validation failed.",
-  "timestamp": "2025-01-01T12:30:02Z",
-  "path": "/api/v1/users"
+  "timestamp": "2025-01-01T12:30:00+09:00"
 }
 ```
-### 4.2 Key Endpoints
-| Domain | Method | URI | Description | Rate Limit |
-| :--- | :--- | :--- | :--- | :--- |
-| **Auth** | `POST` | `/api/v1/auth/signup` | 회원가입 | - |
-| | `POST` | `/api/v1/auth/login` | 로그인 (Access + Refresh Token 발급) | - |
-| | `POST` | `/api/v1/auth/reissue` | 토큰 재발급 | - |
-| | `POST` | `/api/v1/auth/oauth2/google` | Google OAuth2 로그인 | - |
-| **User** | `GET` | `/api/v1/members/me` | 내 정보 및 설정 조회 | - |
-| | `PUT` | `/api/v1/members/me` | 사용자 정보 수정 | - |
-| **Meal** | `POST` | `/api/v1/meals` | 식사 기록 저장 (이미지, 태그 포함) | 3회/분 (사용자당) |
-| | `GET` | `/api/v1/meals` | 날짜별 식사 기록 조회 (Feed/Calendar) | - |
-| | `GET` | `/api/v1/meals/{id}` | 식사 상세 조회 | - |
-| | `PATCH` | `/api/v1/meals/{id}` | 식사 기록 수정 | 3회/분 (사용자당) |
-| | `DELETE` | `/api/v1/meals/{id}` | 식사 기록 삭제 | - |
-| **Symptom** | `POST` | `/api/v1/symptoms` | 증상 기록 저장 (10분 throttle + 일일 10회) | 10회/일 (사용자당) |
-| | `DELETE` | `/api/v1/symptoms/{id}` | 증상 기록 삭제 | - |
-| **Search** | `GET` | `/api/v1/search/suggest` | 검색어 자동완성 (최소 2자, 최대 15자) | 40회/분 (IP당) |
-| | `GET` | `/api/v1/search` | 검색 결과 조회 (페이징, Redis 캐시) | 10회/분 (IP당) |
-| | `POST` | `/api/v1/search/recent` | 최근 검색어 저장 | - |
-| | `DELETE` | `/api/v1/search/recent` | 최근 검색어 삭제 | - |
-| **Analysis** | `GET` | `/api/v1/analysis/home` | **[Main]** 오늘/내일 발병 확률 예측 및 Top3 위험 요인 | - |
-| | `GET` | `/api/v1/analysis/reports` | 상세 분석 차트 데이터 (메뉴별/태그별/식당별 위험도) | - |
-| **Feed** | `GET` | `/api/v1/feed` | 통합 피드 조회 (식사 + 증상) | - |
-## 5. 🚀 Deployment Strategy
 
+<<<<<<< Updated upstream
 * **Target Environment:** Private Ubuntu Server (High Spec / 32GB RAM)
 * **Orchestration Tool:** Docker Compose
 * **Container Stack:**
@@ -156,3 +114,50 @@ Restful API 표준을 준수하며, 모든 응답은 공통 포맷(ApiResponse)�
 * **Reverse Proxy:** Nginx with SSL Termination (Port: 80/443)
 * **Health Checks:** Spring Boot Actuator (`/actuator/health`)
 * **Rate Limit:** Resilience4j - Circuit Breaker & Bucket4j
+=======
+#### [Error Response]
+```JSON
+{
+  "success": false,
+  "status": 429,
+  "code": "TOO_MANY_REQUESTS",
+  "message": "너무 많은 요청이 발생했습니다. 59초 후에 다시 시도해주세요.",
+  "timestamp": "2025-01-01T12:30:05+09:00",
+  "path": "/api/v1/meals",
+  "traceId": "a1b2c3d4e5f6g7h8"
+}
+```
+
+### 4.2 Key Endpoints & Rate Limits
+| Domain | Method | URI | Description | Rate Limit Policy |
+| :--- | :--- | :--- | :--- | :--- |
+| **Auth** | `POST` | `/api/v1/auth/login` | 로그인 (Access/Refresh) | 10회 실패 시 30분 잠금 |
+| | `POST` | `/api/v1/auth/forgot-password` | 비밀번호 찾기 메일 | 2분 쿨다운 / IP 일 10회 |
+| | `POST` | `/api/v1/auth/reissue` | 토큰 재발급 | 분당 10회 / 일일 100회 |
+| **Member** | `GET` | `/api/v1/members/me` | 내 정보 조회 | - |
+| | `POST` | `/api/v1/members/password-verify` | 비밀번호 확인 | 5회 실패 시 15분 잠금 |
+| | `DELETE` | `/api/v1/members/withdraw` | 회원 탈퇴 | 일일 1회 (엄격) |
+| **Meal** | `POST` | `/api/v1/meals` | 식사 기록 저장 | 분당 3회 / 일일 30회 |
+| | `GET` | `/api/v1/meals` | 일별/월별 피드 조회 | - |
+| **Symptom** | `POST` | `/api/v1/symptoms` | 증상 기록 ("아파요") | 10분 Throttle / 일일 10회 |
+| **Search** | `GET` | `/api/v1/search/suggest` | 검색어 자동완성 | 분당 40회 (IP 기준) |
+| | `GET` | `/api/v1/search` | 검색 결과 조회 | 분당 10회 (IP 기준) |
+| **Analysis** | `GET` | `/api/v1/analysis/home` | 실시간 발병 확률 예측 | - |
+| | `GET` | `/api/v1/analysis/reports` | 도메인별 통계 리포트 | - |
+
+---
+
+## 5. 🚀 Deployment & Resilience Strategy
+
+### 5.1 Infrastructure Stack (Docker Compose)
+1.  **`welog-api`**: Spring Boot 서버 (Port: 8080). **Java 25 Virtual Threads** 활성화로 고성능 I/O 처리.
+2.  **`welog-postgres`**: PostgreSQL 17. 모든 비즈니스 데이터 저장.
+3.  **`welog-redis`**: Redis 7. JWT Refresh Token, Rate Limit 버킷, 분석 캐시 관리.
+4.  **`welog-minio`**: S3 호환 오브젝트 스토리지. 식사 사진 및 프로필 이미지 저장 (Port: 9000).
+5.  **`nginx`**: Reverse Proxy & SSL Termination. 클라이언트 요청 라우팅.
+
+### 5.2 Resilience (Resilience4j)
+*   **Email Circuit Breaker:** 외부 메일 전송 API(Resend) 장애 시 시스템 전체 지연을 방지하기 위해 50% 실패율 도달 시 30초간 차단.
+*   **Email Retry:** 네트워크 일시 오류 대응을 위해 최대 3회 재시도 (지수 백오프: 2s, 4s, 8s).
+*   **Actuator Monitoring:** `/actuator/health` 엔드포인트를 통해 각 인프라 요소의 상태를 실시간 체크.
+>>>>>>> Stashed changes
