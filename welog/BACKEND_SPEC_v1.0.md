@@ -101,19 +101,6 @@ Restful API 표준을 준수하며, 모든 응답은 공통 포맷(`ApiResponse`
 }
 ```
 
-* **Target Environment:** Private Ubuntu Server (High Spec / 32GB RAM)
-* **Orchestration Tool:** Docker Compose
-* **Container Stack:**
-  1.  **`welog-pwa`**: Frontend PWA Application (Port: 80)
-  2.  **`welog-api`**: Spring Boot Web Application (Port: 8080)
-  3.  **`welog-postgres`**: PostgreSQL Persistence Storage (Port: 5432)
-  4.  **`welog-redis`**: In-memory Cache & Session Store (Port: 6379)
-  5.  **`welog-minio`**: Object Storage for Images (Port: 9000)
-  6.  **`welog-minio-console`**: MinIO Web Console (Port: 9001)
-* **Reverse Proxy:** Nginx with SSL Termination (Port: 80/443)
-* **Health Checks:** Spring Boot Actuator (`/actuator/health`)
-* **Rate Limit:** Resilience4j - Circuit Breaker & Bucket4j
-=======
 #### [Error Response]
 ```JSON
 {
@@ -149,11 +136,17 @@ Restful API 표준을 준수하며, 모든 응답은 공통 포맷(`ApiResponse`
 ## 5. 🚀 Deployment & Resilience Strategy
 
 ### 5.1 Infrastructure Stack (Docker Compose)
-1.  **`welog-api`**: Spring Boot 서버 (Port: 8080). **Java 25 Virtual Threads** 활성화로 고성능 I/O 처리.
-2.  **`welog-postgres`**: PostgreSQL 17. 모든 비즈니스 데이터 저장.
-3.  **`welog-redis`**: Redis 7. JWT Refresh Token, Rate Limit 버킷, 분석 캐시 관리.
-4.  **`welog-minio`**: S3 호환 오브젝트 스토리지. 식사 사진 및 프로필 이미지 저장 (Port: 9000).
-5.  **`nginx`**: Reverse Proxy & SSL Termination. 클라이언트 요청 라우팅.
+* **Target Environment:** Private Ubuntu Server (High Spec / 32GB RAM)
+* **Orchestration Tool:** Docker Compose
+* **Reverse Proxy:** Nginx with SSL Termination (Port: 80/443)
+
+#### [Container Stack]
+1.  **`welog-pwa`**: Frontend PWA Application (Port: 80)
+2.  **`welog-api`**: Spring Boot 서버 (Port: 8080). **Java 25 Virtual Threads** 활성화로 고성능 I/O 처리.
+3.  **`welog-postgres`**: PostgreSQL 17. 모든 비즈니스 데이터 저장.
+4.  **`welog-redis`**: Redis 7. JWT Refresh Token, Rate Limit 버킷, 분석 캐시 관리.
+5.  **`welog-minio`**: S3 호환 오브젝트 스토리지. 식사 사진 및 프로필 이미지 저장 (Port: 9000).
+6.  **`welog-minio-console`**: MinIO Web Console (Port: 9001).
 
 ### 5.2 Resilience (Resilience4j)
 *   **Email Circuit Breaker:** 외부 메일 전송 API(Resend) 장애 시 시스템 전체 지연을 방지하기 위해 50% 실패율 도달 시 30초간 차단.
