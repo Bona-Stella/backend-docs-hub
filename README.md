@@ -13,13 +13,16 @@
 
 | Project Name | Current Version | Stage | Last Updated | Link |
 | :--- | :---: | :---: | :---: | :---: |
-| **💩 WeLog (위장 질환 위험 예측)** | `v0.8.0` | 🟡 Dev | 2026-04-14 | [Go to Docs](./welog/README.md) |
+| **💩 WeLog (위장 질환 위험 예측)** | `v0.8.0` | 🟤 Stop | 2026-04-14 | [Go to Docs](./welog/README.md) |
 | **😴 Somnus (수면 사이클 계산)** | `v1.0.0` | 🟢 Live | 2026-01-31 | [Go to Docs](./somnus/README.md) |
 
 > **Stage 설명:**
 > - 🟢 **Live**: 운영 서버 배포 완료 (안정적)
+> - 🔵 **Dev**: 개발 서버 배포 완료 (배포 중)
 > - 🟡 **Dev**: 개발 서버 배포 완료 (테스트 중)
-> - 🔴 **Local**: 로컬 개발 중
+> - ⚪ **Local**: 로컬 개발 중
+> - 🟤 **Stop**: 이슈 발생 및 배포 중단
+> - 🔴 **End**: 배포 및 관리 종료
 
 ---
 
