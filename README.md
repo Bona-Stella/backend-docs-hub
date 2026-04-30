@@ -54,6 +54,7 @@
 ---
 
 ## 📢 공통 공지사항 (Notice)
+- **[2026-04-30]** `WeLog` API Server Dev 외부 API 설정 중. 5월 1일 배포 예정.
 - **[2026-04-14]** `WeLog` Welog-PWA, API Server Dev 서버 배포 완료.
 - **[2026-04-14]** `WeLog` docker-compose.yml 재구성. PWA, API, MinIO 분리 배포 환경 구축.
 
