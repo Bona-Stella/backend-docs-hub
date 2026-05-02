@@ -13,7 +13,7 @@
 
 | Project Name | Current Version | Stage | Last Updated | Link |
 | :--- | :---: | :---: | :---: | :---: |
-| **💩 WeLog (위장 질환 위험 예측)** | `v0.8.0` | 🟤 Stop | 2026-04-14 | [Go to Docs](./welog/README.md) |
+| **💩 WeLog (위장 질환 위험 예측)** | `v0.8.0` | 🟡 Dev | 2026-05-02 | [Go to Docs](./welog/README.md) |
 | **😴 Somnus (수면 사이클 계산)** | `v1.0.0` | 🟢 Live | 2026-01-31 | [Go to Docs](./somnus/README.md) |
 
 > **Stage 설명:**
@@ -54,7 +54,7 @@
 ---
 
 ## 📢 공통 공지사항 (Notice)
-- **[2026-04-30]** `WeLog` API Server Dev 외부 API 설정 중. 5월 1일 배포 예정.
+- **[2026-05-02]** `WeLog` API Server Dev 외부 API 설정 및 배포 완료.
 - **[2026-04-14]** `WeLog` Welog-PWA, API Server Dev 서버 배포 완료.
 - **[2026-04-14]** `WeLog` docker-compose.yml 재구성. PWA, API, MinIO 분리 배포 환경 구축.
 
