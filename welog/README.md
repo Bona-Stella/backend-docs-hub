@@ -82,7 +82,7 @@ API 요청을 보낼 기본 Base URL입니다.
 
 ## 7. 🗣 Q&A & Issues
 
-개발 중 발생하는 API 오류나 문의 사항은 **[Issues 탭](../../issues)**에 남겨주세요.
+개발 중 발생하는 API 오류나 문의 사항은 [Issues 탭](../../issues)에 남겨주세요.
 급한 건은 메일로 연락 바랍니다. bona.stella.91@gmail.com
 
 ### 📝 개발 참고사항
