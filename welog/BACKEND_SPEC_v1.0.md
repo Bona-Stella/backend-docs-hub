@@ -121,7 +121,7 @@ Restful API 표준을 준수하며, 모든 응답은 공통 포맷(`ApiResponse`
 | | `POST` | `/api/v1/auth/forgot-password` | 비밀번호 찾기 메일 | 2분 쿨다운 / IP 일 10회 |
 | | `POST` | `/api/v1/auth/reissue` | 토큰 재발급 | 분당 10회 / 일일 100회 |
 | **Member** | `GET` | `/api/v1/members/me` | 내 정보 조회 | - |
-| | `POST` | `/api/v1/members/password-verify` | 비밀번호 확인 | 5회 실패 시 15분 잠금 |
+| | `POST` | `/api/v1/members/check-nickname` | 닉네임 확인 | - |
 | | `DELETE` | `/api/v1/members/withdraw` | 회원 탈퇴 | 일일 1회 (엄격) |
 | **Meal** | `POST` | `/api/v1/meals` | 식사 기록 저장 | 분당 3회 / 일일 30회 |
 | | `GET` | `/api/v1/meals` | 일별/월별 피드 조회 | - |
