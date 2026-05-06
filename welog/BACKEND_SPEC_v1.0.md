@@ -1,6 +1,6 @@
 # 🛠️ WeLog - V1.0 Backend Technical Spec
 
-> **WeLog** 백엔드 서버의 기술 스택, 아키텍처, 데이터베이스 스키마 및 API 명세를 정의합니다.  
+> **WeLog** 백엔드 서버의 기술 스택, 아키텍처, 데이터베이스 스키마 및 API 명세를 정의합니다.
 > **Target:** High-spec Private Server Deployment (Ubuntu Server 24.04)
 
 ---
@@ -118,18 +118,22 @@ Restful API 표준을 준수하며, 모든 응답은 공통 포맷(`ApiResponse`
 | Domain | Method | URI | Description | Rate Limit Policy |
 | :--- | :--- | :--- | :--- | :--- |
 | **Auth** | `POST` | `/api/v1/auth/login` | 로그인 (Access/Refresh) | 10회 실패 시 30분 잠금 |
-| | `POST` | `/api/v1/auth/forgot-password` | 비밀번호 찾기 메일 | 2분 쿨다운 / IP 일 10회 |
+| | `POST` | `/api/v1/auth/password/forgot` | 비밀번호 찾기 메일 | 이메일별 2분 쿨다운 / IP별 일 10회 / 이메일별 일 3회 |
 | | `POST` | `/api/v1/auth/reissue` | 토큰 재발급 | 분당 10회 / 일일 100회 |
 | **Member** | `GET` | `/api/v1/members/me` | 내 정보 조회 | - |
+<<<<<<< Updated upstream
 | | `POST` | `/api/v1/members/check-nickname` | 닉네임 확인 | - |
+=======
+| | `POST` | `/api/v1/members/password/verify` | 비밀번호 확인 | 분당 3회 / 5회 실패 시 15분 잠금 |
+>>>>>>> Stashed changes
 | | `DELETE` | `/api/v1/members/withdraw` | 회원 탈퇴 | 일일 1회 (엄격) |
 | **Meal** | `POST` | `/api/v1/meals` | 식사 기록 저장 | 분당 3회 / 일일 30회 |
-| | `GET` | `/api/v1/meals` | 일별/월별 피드 조회 | - |
-| **Symptom** | `POST` | `/api/v1/symptoms` | 증상 기록 ("아파요") | 10분 Throttle / 일일 10회 |
+| **Symptom** | `POST` | `/api/v1/symptoms` | 증상 기록 ("아파요") | 10분 1회 (스로틀) / 일일 10회 |
+| **Feed** | `GET` | `/api/v1/feeds` | 통합 피드 조회 | 분당 60회 (IP 기준) |
 | **Search** | `GET` | `/api/v1/search/suggest` | 검색어 자동완성 | 분당 40회 (IP 기준) |
 | | `GET` | `/api/v1/search` | 검색 결과 조회 | 분당 10회 (IP 기준) |
-| **Analysis** | `GET` | `/api/v1/analysis/home` | 실시간 발병 확률 예측 | - |
-| | `GET` | `/api/v1/analysis/reports` | 도메인별 통계 리포트 | - |
+| **Analysis** | `GET` | `/api/v1/analysis/home` | 실시간 발병 확률 예측 | 분당 60회 (IP 기준) |
+| | `GET` | `/api/v1/analysis/reports` | 도메인별 통계 리포트 | 분당 60회 (IP 기준) |
 
 ---
 
