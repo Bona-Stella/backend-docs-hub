@@ -30,10 +30,10 @@ API 요청을 보낼 기본 Base URL입니다.
 | Role | Username (ID) | Password | 설명 |
 | :--- | :--- | :--- | :--- |
 | **Swagger** | `admin` | `문의주세요.` | Swagger Docs 사용자 |
-| **User A** | `user1@welog.com` | `Password123!` | 일반 사용자 (야식광팬/야식 위주) |
-| **User B** | `user2@welog.com` | `Password123!` | 일반 사용자 (헬시걸/건강식 위주) |
-| **User C** | `user3@welog.com` | `Password123!` | 일반 사용자 (직장인A/직장인 위주) |
-| **User D** | `user4@welog.com` | `Password123!` | 일반 사용자 (비건러버/비건 위주) |
+| **User A** | `user1@welog.com` | `Password123!` | 테스트 유저 (닉네임:야식광팬 / 식단:야식 위주) |
+| **User B** | `user2@welog.com` | `Password123!` | 테스트 유저 (닉네임:헬시걸 / 식단:건강식 위주) |
+| **User C** | `user3@welog.com` | `Password123!` | 일반 사용자 (닉네임:직장인A / 식단:직장인 위주) |
+| **User D** | `user4@welog.com` | `Password123!` | 일반 사용자 (닉네임:비건러버 / 식단:비건 위주) |
 | **OAuth2** | Google Login | - | Google 소셜 로그인 지원 |
 
 > ⚠️ **주의**: 테스트 계정을 포함한 모든 데이터는 `매일 새벽 4시`마다 주기적으로 초기화됩니다.  
