@@ -4,7 +4,7 @@
 서버 접속 정보, 테스트 계정, 그리고 **API 변경 내역(Changelog)**을 이곳에서 관리합니다.
 
 > **Current Version**: `v0.8.0`
-> **Last Updated**: 2026-04-14
+> **Last Updated**: 2026-05-15
 
 ---
 
